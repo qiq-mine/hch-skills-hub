@@ -9,7 +9,7 @@ Deploy `DeepSeek-V4-Flash-w8a8-mtp` (W8A8 quantized, 1M context) on a single
 Ascend node using the official `vllm-ascend` Docker image. The deployment
 exposes an OpenAI-compatible API at `http://<host>:<port>/v1`.
 
-**Driver:** `.claude/skills/run-deepseek-v4-flash/deploy.sh`
+**Driver:** [`deploy.sh`](./deploy.sh)
 
 ## Prerequisites
 
@@ -39,8 +39,8 @@ Use the `deploy.sh` driver. It launches the container, sets environment
 variables, and starts the `vllm serve` process.
 
 ```bash
-cd <unit-root>
-.claude/skills/run-deepseek-v4-flash/deploy.sh \
+cd <project-root>/run-deepseek-v4-flash
+./deploy.sh \
   --model /path/to/DeepSeek-V4-Flash-w8a8-mtp \
   --image quay.io/ascend/vllm-ascend:deepseekv4-a3 \
   --port 8008 \
@@ -139,7 +139,7 @@ vllm serve /root/.cache/modelscope/hub/models/vllm-ascend/DeepSeek-V4-Flash-w8a8
 - **`--tokenizer-mode deepseek_v4`** is required — the default tokenizer
   does not handle DeepSeek V4's special tokens (tool-calls, reasoning).
 - **Multi-node** requires `--data-parallel-address` and `--headless` on
-  secondary nodes (see DeepSeek-V4-Pro skill for the pattern).
+  secondary nodes (see [`run-deepseek-v4-pro`](../run-deepseek-v4-pro/SKILL.md) skill for the pattern).
 
 ## Troubleshooting
 

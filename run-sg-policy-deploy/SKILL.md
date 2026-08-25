@@ -7,7 +7,7 @@ description: Deploy security group port policy on Huawei Cloud — parse work or
 
 从开通工单（文本或图片）中提取策略信息，自动在华为云上查询以目的 IP 命名的安全组，并添加规则。**不会删除或修改已有规则。**
 
-**驱动脚本:** `driver.py`
+**驱动脚本:** [`driver.py`](./driver.py)
 
 ## 工作流概述
 

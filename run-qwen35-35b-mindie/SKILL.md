@@ -9,7 +9,7 @@ Deploy `Qwen3.5-35B` (or `Qwen3.5-35B-A3B` MoE variant) on Ascend hardware
 using Huawei MindIE inference engine. The service exposes an
 OpenAI-compatible API at `http://<host>:1025/v1/chat/completions`.
 
-**Driver:** `deploy.sh` — sources MindIE env, generates config, starts service.
+**Driver:** [`deploy.sh`](./deploy.sh) — sources MindIE env, generates config, starts service.
 
 ## Prerequisites
 

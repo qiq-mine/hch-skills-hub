@@ -1,36 +1,25 @@
 # skills-hub
 
-#### Description
-一些skills
+Agent Skills Collection — Automated operations and deployment workflows for Huawei Cloud and Ascend AI infrastructure.
 
-#### Software Architecture
-Software architecture description
+## Skills List
 
-#### Installation
+| Skill | Description |
+|-------|-------------|
+| [bms-create-ims](./bms-create-ims/) | Huawei Cloud Bare Metal Server (BMS) private image creation (OS install, partition, drivers, Cloud-Init) |
+| [get-esm-api](./get-esm-api/) | ESM API integration — IAM Token auth, APIG AppCode, capacity/alarms/audit logs/billing query |
+| [get-kaoshibao-list](./get-kaoshibao-list/) | Kaoshibao exam question extraction JS script (run in browser Console) |
+| [run-deepseek-v4-flash](./run-deepseek-v4-flash/) | DeepSeek-V4-Flash Ascend single-node deployment — vllm-ascend, Docker, MTP inference |
+| [run-deepseek-v4-pro](./run-deepseek-v4-pro/) | DeepSeek-V4-Pro Ascend multi-node cluster deployment — Apptainer, Slurm, 4×8×910B |
+| [run-kaoshibao-collect](./run-kaoshibao-collect/) | Kaoshibao browser automated collection — Playwright, obfuscated font decoding, pagination |
+| [run-qwen35-35b-mindie](./run-qwen35-35b-mindie/) | Qwen3.5-35B Ascend MindIE inference deployment — conf.json, environment scripts, mindieservice_daemon |
+| [run-sg-policy-deploy](./run-sg-policy-deploy/) | Huawei Cloud security group port policy deployment — ticket parser, SG query, rule creation |
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## Usage
 
-#### Instructions
+Each skill resides in its own directory containing `SKILL.md` (instructions) and corresponding driver scripts.
+Skills are automatically discovered and loaded on demand by the AI agent.
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## License
 
-#### Contribution
-
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+Internal Use

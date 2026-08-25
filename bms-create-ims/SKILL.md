@@ -30,7 +30,7 @@ agent_created: true
 
 ### 推荐：Agent 自动化模式
 
-如果你有可 SSH 进 VM 的 agent，将 `scripts/setup-bms.sh` 和所有驱动包一起传入 VM
+如果你有可 SSH 进 VM 的 agent，将 [`scripts/setup-bms.sh`](./scripts/setup-bms.sh) 和所有驱动包一起传入 VM
 的 `/tmp/bms-packages/`，然后 agent 只需执行一行命令：
 
 ```bash
@@ -61,7 +61,7 @@ bash /tmp/bms-packages/setup-bms.sh --model kat2 --os openEuler --skip-network
 
 #### 第一步：根据机型确定需要的软件包
 
-先向用户确认目标 BMS 机型（如 s3、ac8、h2 等），然后查询 `references/driver_mapping.md`
+先向用户确认目标 BMS 机型（如 s3、ac8、h2 等），然后查询 [`references/driver_mapping.md`](./references/driver_mapping.md)
 确定该机型需要哪些驱动。常见的包分类如下：
 
 | 类别 | 典型包名 / 文件名 | 来源 |
@@ -112,7 +112,7 @@ sha256sum *.rpm *.tgz
 
 ### Step 1: OS Installation — 安装操作系统并分区
 
-分区规则详见 `references/partition_guide.md`。核心约束：
+分区规则详见 [`references/partition_guide.md`](./references/partition_guide.md)。核心约束：
 
 - 使用 **MBR** 分区表
 - 主分区数量 **≤ 3 个**
@@ -199,7 +199,7 @@ datasource_list: [OpenStack]
 
 根据系统设置 `system_info.distro`（rhel / ubuntu / debian 等）。
 
-详细配置参数见 `references/cloud_init_config.md`。
+详细配置参数见 [`references/cloud_init_config.md`](./references/cloud_init_config.md)。
 
 #### 4.3 验证服务
 
@@ -395,13 +395,13 @@ systemctl enable serial-getty@ttyAMA0
 | kat2 | UEFI | ComputingComponentiDriver | - | ✓ | ✓(MLX5) | - | - | - | ✓ |
 | ac8/ki2/kc2 | UEFI | - | - | - | - | ✓ | ✓ | ✓ | - |
 
-完整驱动对应表见 `references/driver_mapping.md`。
+完整驱动对应表见 [`references/driver_mapping.md`](./references/driver_mapping.md)。
 
 ---
 
 ## Troubleshooting
 
-常见问题参考 `references/faq.md`：
+常见问题参考 [`references/faq.md`](./references/faq.md)：
 
 - bond0 VLAN 子接口源 MAC 问题（RHEL/CentOS 7.x 内核缺陷）
 - CPU 频率调节模式配置
@@ -414,11 +414,11 @@ systemctl enable serial-getty@ttyAMA0
 
 ## References
 
-- `references/os_support.md` — x86/ARM 支持的操作系统与内核版本
-- `references/driver_mapping.md` — 完整的机型-驱动对应表
-- `references/software_checklist.md` — 所有需要的软件与工具清单
-- `references/partition_guide.md` — BIOS/UEFI 分区方案详解
-- `references/cloud_init_config.md` — Cloud-Init 安装与配置详细步骤
-- `references/faq.md` — 常见问题与解决方案
+- [`references/os_support.md`](./references/os_support.md) — x86/ARM 支持的操作系统与内核版本
+- [`references/driver_mapping.md`](./references/driver_mapping.md) — 完整的机型-驱动对应表
+- [`references/software_checklist.md`](./references/software_checklist.md) — 所有需要的软件与工具清单
+- [`references/partition_guide.md`](./references/partition_guide.md) — BIOS/UEFI 分区方案详解
+- [`references/cloud_init_config.md`](./references/cloud_init_config.md) — Cloud-Init 安装与配置详细步骤
+- [`references/faq.md`](./references/faq.md) — 常见问题与解决方案
 
 需要详细参数时加载对应参考文件，或在 references 中搜索关键词。

@@ -8,7 +8,7 @@ description: Call Huawei Cloud ESM API — IAM token auth, APIG AppCode, query c
 调用华为云 ESM（Enterprise Service Management）API，获取云服务容量、
 告警、审计日志、监控指标、计量话单等数据。
 
-**驱动脚本:** `driver.py`
+**驱动脚本:** [`driver.py`](./driver.py)
 
 ## 前置条件
 

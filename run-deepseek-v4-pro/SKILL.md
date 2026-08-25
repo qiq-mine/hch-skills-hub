@@ -12,7 +12,7 @@ image and Slurm workload manager. Minimum: 4 nodes × 8× Ascend 910B (64G).
 The deployment exposes an OpenAI-compatible API at
 `http://<master-node-ip>:<port>/v1`.
 
-**Driver:** `.claude/skills/run-deepseek-v4-pro/deploy.sh`
+**Driver:** [`deploy.sh`](./deploy.sh)
 
 ## Prerequisites
 
@@ -50,8 +50,8 @@ Use the `deploy.sh` driver. It generates the Slurm job script and submits
 it to the cluster.
 
 ```bash
-cd <unit-root>
-.claude/skills/run-deepseek-v4-pro/deploy.sh \
+cd <project-root>/run-deepseek-v4-pro
+./deploy.sh \
   --model-dir /mnt/nvme1n1/model/DeepSeek-V4-Pro-w4a8-mtp \
   --model-name DeepSeek-V4 \
   --port 11025 \

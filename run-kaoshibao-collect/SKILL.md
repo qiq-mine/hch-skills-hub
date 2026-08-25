@@ -10,7 +10,7 @@ using browser automation. Handles **5 custom font obfuscation maps** that
 the site uses to prevent copying — decodes them automatically, paginates
 through all questions, and exports structured data.
 
-**Driver:** `kaoshibao_collect.py`
+**Driver:** [`kaoshibao_collect.py`](./kaoshibao_collect.py)
 
 ## Prerequisites
 
@@ -84,7 +84,7 @@ kaoshibao_output/
 ## Run (human path)
 
 For direct browser Console usage (no automation needed), the original
-script at `get-kaoshibao-list/kaoshibao_extractor.js` can be pasted into
+script at [`../get-kaoshibao-list/kaoshibao_extractor.js`](../get-kaoshibao-list/kaoshibao_extractor.js) (or [`get-kaoshibao-list`](../get-kaoshibao-list/SKILL.md)) can be pasted into
 the browser's F12 Console on the kaoshibao page.
 
 ## Gotchas
@@ -113,4 +113,5 @@ the browser's F12 Console on the kaoshibao page.
 
 ## References
 
-- Original extraction script: `get-kaoshibao-list/kaoshibao_extractor.js`
+- Original extraction script: [`../get-kaoshibao-list/kaoshibao_extractor.js`](../get-kaoshibao-list/kaoshibao_extractor.js)
+- Console extraction skill: [`get-kaoshibao-list`](../get-kaoshibao-list/SKILL.md)
