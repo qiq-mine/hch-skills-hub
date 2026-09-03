@@ -1,0 +1,4 @@
+interface:
+  display_name: "Remotion AI 课程制作"
+  short_description: "Review-first Chinese AI explainer video production workflow"
+  default_prompt: "使用 Remotion 为中文 AI 技术课程建立 HTML 审阅稿、配音、封面和渲染流程。"

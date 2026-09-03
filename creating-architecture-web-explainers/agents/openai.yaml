@@ -1,0 +1,4 @@
+interface:
+  display_name: "技术架构 Web 可视化"
+  short_description: "将复杂技术架构整理成中文 Web、Archscribe 图或融合展示"
+  default_prompt: "Use $creating-architecture-web-explainers to turn this technical architecture into an interactive Chinese explainer, choosing Web, Archscribe, or a hybrid based on the content."

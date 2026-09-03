@@ -1,0 +1,4 @@
+interface:
+  display_name: "de.ai-lesson-create"
+  short_description: "Create Chinese AI lesson videos"
+  default_prompt: "Use $de-ai-lesson-create to turn my lesson outline, captions, and screenshots into a polished Chinese AI explainer video."

@@ -6,7 +6,7 @@
 支持选择题（单选/多选）、判断题、填空题、简答题。
 
 Usage:
-  python kaoshibao_collect.py --url <page-url> [--output ./data] [--max 200]
+  python examener_collect.py --url <page-url> [--output ./data] [--max 200]
 """
 
 import argparse
@@ -75,7 +75,7 @@ def _apply_map(text: str, mapping: dict) -> str:
 # 采集主逻辑
 # ======================================================================
 
-class KaoshibaoCollector:
+class ExamenerCollector:
     """考试宝题目采集器"""
 
     QUESTION_SELECTORS = [
@@ -98,7 +98,7 @@ class KaoshibaoCollector:
         self.questions = []
         self.seen_titles = set()
         self.type_counts = {}
-        self.logger = logging.getLogger("kaoshibao")
+        self.logger = logging.getLogger("examener")
 
     def log(self, msg: str):
         self.logger.info(msg)
@@ -341,7 +341,7 @@ def main():
         description="考试宝题目采集 — 浏览器自动化"
     )
     parser.add_argument("--url", required=True, help="考试宝题目页面 URL")
-    parser.add_argument("--output", default="./kaoshibao_output", help="输出目录")
+    parser.add_argument("--output", default="./examener_output", help="输出目录")
     parser.add_argument("--max", type=int, default=500, help="最大采集题数")
     parser.add_argument("--delay", type=float, default=0.8, help="翻页间隔（秒）")
     parser.add_argument("--headless", action="store_true", default=True, help="无头模式")
@@ -357,7 +357,7 @@ def main():
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(message)s",
         handlers=[
-            logging.FileHandler(output_dir / "kaoshibao_session.log", encoding="utf-8"),
+            logging.FileHandler(output_dir / "examener_session.log", encoding="utf-8"),
             logging.StreamHandler(),
         ]
     )
@@ -389,7 +389,7 @@ def main():
         )
         page = context.new_page()
 
-        collector = KaoshibaoCollector(page, delay=args.delay)
+        collector = ExamenerCollector(page, delay=args.delay)
         questions = collector.collect(
             url=args.url,
             max_q=args.max,
@@ -401,20 +401,20 @@ def main():
             sys.exit(1)
 
         # 保存 JSON
-        json_path = output_dir / "kaoshibao_questions.json"
+        json_path = output_dir / "examener_questions.json"
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(questions, f, ensure_ascii=False, indent=2)
         print(f"\n📄 JSON 已保存: {json_path}")
 
         # 保存 Markdown
         md = to_markdown(questions, source_url=args.url)
-        md_path = output_dir / "kaoshibao_questions.md"
+        md_path = output_dir / "examener_questions.md"
         with open(md_path, "w", encoding="utf-8") as f:
             f.write(md)
         print(f"📄 Markdown 已保存: {md_path}")
 
         # 截图
-        screenshot_path = output_dir / "kaoshibao_screenshot.png"
+        screenshot_path = output_dir / "examener_screenshot.png"
         page.screenshot(path=str(screenshot_path))
         print(f"📸 截图已保存: {screenshot_path}")
 

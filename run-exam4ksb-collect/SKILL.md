@@ -1,16 +1,16 @@
 ---
-name: run-kaoshibao-collect
-description: Collect exam questions from kaoshibao website via browser automation — handles 5 font obfuscation maps, auto-paginates, exports JSON+Markdown
+name: run-exam4ksb-collect
+description: Collect exam questions from examener website via browser automation — handles 5 font obfuscation maps, auto-paginates, exports JSON+Markdown
 ---
 
 # 考试宝题目采集（浏览器自动化）
 
-Automatically extract exam questions from the 考试宝 (kaoshibao) website
+Automatically extract exam questions from the 考试宝 (examener) website
 using browser automation. Handles **5 custom font obfuscation maps** that
 the site uses to prevent copying — decodes them automatically, paginates
 through all questions, and exports structured data.
 
-**Driver:** [`kaoshibao_collect.py`](./kaoshibao_collect.py)
+**Driver:** [`examener_collect.py`](./examener_collect.py)
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ playwright install chromium
 
 ## How it works
 
-The driver opens the kaoshibao question page via Playwright, injects the
+The driver opens the examener question page via Playwright, injects the
 extraction + font deobfuscation logic, then:
 
 ```
@@ -38,9 +38,9 @@ decoding works entirely offline — no external font API needed.
 ## Run (agent path)
 
 ```bash
-cd <project-root>/run-kaoshibao-collect
+cd <project-root>/run-exam4ksb-collect
 
-python kaoshibao_collect.py --url "https://example.kaoshibao.com/exam/xxx" \
+python examener_collect.py --url "https://example.examener.com/exam/xxx" \
   --output ./data \
   --max 200
 ```
@@ -49,8 +49,8 @@ python kaoshibao_collect.py --url "https://example.kaoshibao.com/exam/xxx" \
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--url` | (required) | Kaoshibao exam/question URL |
-| `--output` | `./kaoshibao_output` | Output directory |
+| `--url` | (required) | Examener exam/question URL |
+| `--output` | `./examener_output` | Output directory |
 | `--max` | `500` | Max number of questions to collect |
 | `--delay` | `0.8` | Delay between page turns (seconds) |
 | `--headless` | `true` | Run browser in headless mode |
@@ -60,11 +60,11 @@ python kaoshibao_collect.py --url "https://example.kaoshibao.com/exam/xxx" \
 **Output files:**
 
 ```
-kaoshibao_output/
-├── kaoshibao_questions.json        # Structured JSON array
-├── kaoshibao_questions.md          # Readable Markdown
-├── kaoshibao_screenshot.png        # Screenshot of last page
-└── kaoshibao_session.log           # Run log
+examener_output/
+├── examener_questions.json        # Structured JSON array
+├── examener_questions.md          # Readable Markdown
+├── examener_screenshot.png        # Screenshot of last page
+└── examener_session.log           # Run log
 ```
 
 **Example JSON output:**
@@ -84,8 +84,8 @@ kaoshibao_output/
 ## Run (human path)
 
 For direct browser Console usage (no automation needed), the original
-script at [`../get-kaoshibao-list/kaoshibao_extractor.js`](../get-kaoshibao-list/kaoshibao_extractor.js) (or [`get-kaoshibao-list`](../get-kaoshibao-list/SKILL.md)) can be pasted into
-the browser's F12 Console on the kaoshibao page.
+script at [`../get-exam4ksb-list/examener_extractor.js`](../get-exam4ksb-list/examener_extractor.js) (or [`get-exam4ksb-list`](../get-exam4ksb-list/SKILL.md)) can be pasted into
+the browser's F12 Console on the examener page.
 
 ## Gotchas
 
@@ -113,5 +113,13 @@ the browser's F12 Console on the kaoshibao page.
 
 ## References
 
-- Original extraction script: [`../get-kaoshibao-list/kaoshibao_extractor.js`](../get-kaoshibao-list/kaoshibao_extractor.js)
-- Console extraction skill: [`get-kaoshibao-list`](../get-kaoshibao-list/SKILL.md)
+- Original extraction script: [`../get-exam4ksb-list/examener_extractor.js`](../get-exam4ksb-list/examener_extractor.js)
+- Console extraction skill: [`get-exam4ksb-list`](../get-exam4ksb-list/SKILL.md)
+
+## 待补充内容与规划 (TODO / Backlog)
+
+> [!NOTE]
+> 自动化采集核心功能完整，后续规划补充：
+
+- [ ] **登录态持久化/Cookie 注入支持**：支持配置用户 Cookie 或 storage_state.json，以支持需要登录/会员权限题库的免密自动采集。
+- [ ] **多平台题目采集驱动扩展**：支持拓展更多在线题库/刷题系统的无头浏览器自动化采集。

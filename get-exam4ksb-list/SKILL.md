@@ -1,6 +1,6 @@
 ---
-name: get-kaoshibao-list
-description: Extract exam questions from Kaoshibao (考试宝) web pages via browser console script — handles 5 obfuscated font mappings, auto-paginates, deduplicates, and downloads JSON and Markdown
+name: get-exam4ksb-list
+description: Extract exam questions from Examener (考试宝) web pages via browser console script — handles 5 obfuscated font mappings, auto-paginates, deduplicates, and downloads JSON and Markdown
 ---
 
 # 考试宝题目提取（浏览器控制台脚本）
@@ -9,7 +9,7 @@ description: Extract exam questions from Kaoshibao (考试宝) web pages via bro
 
 内置 **5 套混淆字体映射表**，能够在前端自动解码混淆字符，支持翻页、去重并导出 JSON 和 Markdown 文件。
 
-**脚本文件:** [`kaoshibao_extractor.js`](./kaoshibao_extractor.js)
+**脚本文件:** [`examener_extractor.js`](./examener_extractor.js)
 
 ## 适用场景
 
@@ -18,19 +18,19 @@ description: Extract exam questions from Kaoshibao (考试宝) web pages via bro
 - 题目包含混淆字体（如 `k1cc4fe8...`, `k4e04735...` 等），需要离线解混淆
 - 支持单选题、多选题、判断题、填空题、简答题
 
-> **提示：** 如需无人工干预的自动化无头浏览器批量采集，推荐使用 [`run-kaoshibao-collect`](../run-kaoshibao-collect/SKILL.md) 技能。
+> **提示：** 如需无人工干预的自动化无头浏览器批量采集，推荐使用 [`run-exam4ksb-collect`](../run-exam4ksb-collect/SKILL.md) 技能。
 
 ## 使用步骤
 
 1. 打开 Chrome / Edge 等现代浏览器，访问目标考试宝练习/考试页面。
 2. 按 `F12` 或 `Ctrl+Shift+I`（Mac: `Cmd+Option+I`）打开开发者工具。
 3. 切换到 **Console（控制台）** 标签页。
-4. 复制 [`kaoshibao_extractor.js`](./kaoshibao_extractor.js) 的完整代码，粘贴到控制台中并回车运行。
+4. 复制 [`examener_extractor.js`](./examener_extractor.js) 的完整代码，粘贴到控制台中并回车运行。
 5. 脚本将自动：
    - 检测当前题目字体并解码文本
    - 提取题目类型、题干、选项、正确答案及解析
    - 自动点击“下一题”或模拟右方向键翻页
-   - 提取完成后自动下载 `kaoshibao_<timestamp>.json` 和 `kaoshibao_<timestamp>.md` 文件
+   - 提取完成后自动下载 `examener_<timestamp>.json` 和 `examener_<timestamp>.md` 文件
    - 将提取数据暂存到全局变量 `window.__ksb_data`
 
 ## 配置参数
@@ -47,7 +47,7 @@ var MAX_QUESTIONS = 500;   // 单次最大提取题数
 
 ## 输出示例
 
-### JSON 输出 (`kaoshibao_*.json`)
+### JSON 输出 (`examener_*.json`)
 
 ```json
 [
@@ -66,13 +66,13 @@ var MAX_QUESTIONS = 500;   // 单次最大提取题数
 ]
 ```
 
-### Markdown 输出 (`kaoshibao_*.md`)
+### Markdown 输出 (`examener_*.md`)
 
 ```markdown
 # 考试宝题目提取结果
 
 提取时间：2026/8/25 14:00:00
-来源：https://www.kaoshibao.com/exam/...
+来源：https://www.examener.com/exam/...
 共 1 道题
 
 ---
@@ -101,4 +101,12 @@ var MAX_QUESTIONS = 500;   // 单次最大提取题数
 
 ## 相关技能
 
-- [`run-kaoshibao-collect`](../run-kaoshibao-collect/SKILL.md) — 考试宝题目 Playwright 自动化采集技能
+- [`run-exam4ksb-collect`](../run-exam4ksb-collect/SKILL.md) — 考试宝/Examener 题目 Playwright 自动化采集技能
+
+## 待补充内容与规划 (TODO / Backlog)
+
+> [!NOTE]
+> 核心解混淆与导出逻辑已就绪，以下功能待补充与增强：
+
+- [ ] **动态字体探测工具**：当平台更新字体哈希导致乱码时，补充自动提取新 `@font-face` 并生成字形映射表的一键辅助脚本。
+- [ ] **多平台题目抽取适配器**：目前针对 Examener（考试宝）结构，后续可补充更多网页考试/刷题平台的解析器。
