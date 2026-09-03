@@ -8,10 +8,10 @@
 |------|------|
 | [bms-create-ims](./bms-create-ims/) | 裸金属服务器BMS私有镜像制作（OS 安装、分区、驱动、Cloud-Init） |
 | [get-esm-api](./get-esm-api/) | ESM API 调用 — IAM Token 认证、APIG AppCode、容量/告警/审计/话单查询 |
-| [get-kaoshibao-list](./get-kaoshibao-list/) | 考试宝题目提取原始 JS 脚本（浏览器 Console 运行） |
 | [run-deepseek-v4-flash](./run-deepseek-v4-flash/) | DeepSeek-V4-Flash 昇腾单机部署 — vllm-ascend、Docker、MTP 推理 |
 | [run-deepseek-v4-pro](./run-deepseek-v4-pro/) | DeepSeek-V4-Pro 昇腾多机集群部署 — Apptainer、Slurm、4×8×910B |
-| [run-kaoshibao-collect](./run-kaoshibao-collect/) | 考试宝题目浏览器自动化采集 — Playwright、混淆字体解码、翻页提取 |
+| [get-kaoshibao-list](./get-kaoshibao-list/) | web-context提取原始 JS 脚本（浏览器 Console 运行） |
+| [run-kaoshibao-collect](./run-kaoshibao-collect/) | web-context浏览器自动化采集 — Playwright、混淆字体解码、翻页提取 |
 | [run-qwen35-35b-mindie](./run-qwen35-35b-mindie/) | Qwen3.5-35B 昇腾 MindIE 推理部署 — conf.json、环境脚本、mindieservice_daemon |
 | [run-sg-policy-deploy](./run-sg-policy-deploy/) | 安全组端口策略工单开通 — 工单解析、查询安全组、添加规则、不删已有规则 |
 
