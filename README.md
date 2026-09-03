@@ -6,7 +6,7 @@
 
 | 技能 | 说明 |
 |------|------|
-| [bms-create-ims](./bms-create-ims/) | 华为云裸金属服务器私有镜像制作（OS 安装、分区、驱动、Cloud-Init） |
+| [bms-create-ims](./bms-create-ims/) | 裸金属服务器BMS私有镜像制作（OS 安装、分区、驱动、Cloud-Init） |
 | [get-esm-api](./get-esm-api/) | ESM API 调用 — IAM Token 认证、APIG AppCode、容量/告警/审计/话单查询 |
 | [get-kaoshibao-list](./get-kaoshibao-list/) | 考试宝题目提取原始 JS 脚本（浏览器 Console 运行） |
 | [run-deepseek-v4-flash](./run-deepseek-v4-flash/) | DeepSeek-V4-Flash 昇腾单机部署 — vllm-ascend、Docker、MTP 推理 |
