@@ -1,6 +1,6 @@
 # skills-hub
 
-Claude Code 技能集合 — 面向华为云 + 昇腾 AI 基础设施的自动化运维与部署技能。
+技能集合
 
 ## 技能列表
 
@@ -13,7 +13,7 @@ Claude Code 技能集合 — 面向华为云 + 昇腾 AI 基础设施的自动�
 | [run-deepseek-v4-pro](./run-deepseek-v4-pro/) | DeepSeek-V4-Pro 昇腾多机集群部署 — Apptainer、Slurm、4×8×910B |
 | [run-kaoshibao-collect](./run-kaoshibao-collect/) | 考试宝题目浏览器自动化采集 — Playwright、混淆字体解码、翻页提取 |
 | [run-qwen35-35b-mindie](./run-qwen35-35b-mindie/) | Qwen3.5-35B 昇腾 MindIE 推理部署 — conf.json、环境脚本、mindieservice_daemon |
-| [run-sg-policy-deploy](./run-sg-policy-deploy/) | 华为云安全组端口策略开通 — 工单解析、查询安全组、添加规则、不删已有规则 |
+| [run-sg-policy-deploy](./run-sg-policy-deploy/) | 安全组端口策略工单开通 — 工单解析、查询安全组、添加规则、不删已有规则 |
 
 ## 使用方式
 
