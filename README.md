@@ -1,6 +1,6 @@
 # skills-hub
 
-技能集合
+AI 智能体技能与插件集合 — 面向云基础设施运维部署、网页采集、AI视频制作与严谨软件工程工作流（原生适配 Google Antigravity、DeepSeek Harness (DSH) 与 Claude Code）。
 
 ## 技能列表
 
@@ -14,6 +14,22 @@
 | [run-deepseek-v4-pro](./run-deepseek-v4-pro/) | DeepSeek-V4-Pro 昇腾多机集群部署 — Apptainer、Slurm、4×8×910B |
 | [run-qwen35-35b-mindie](./run-qwen35-35b-mindie/) | Qwen3.5-35B 昇腾 MindIE 推理部署 — conf.json、环境脚本、mindieservice_daemon |
 | [run-sg-policy-deploy](./run-sg-policy-deploy/) | 安全组端口策略工单开通 — 工单解析、查询安全组、添加规则、不删已有规则 |
+
+### 严谨软件工程 (pstack 技能套件)
+
+> 原生适配 Google Antigravity 与 DeepSeek Harness (DSH)，源自 Lauren Tan (@poteto)。
+
+| 技能 | 说明 |
+|------|------|
+| [pstack](./pstack/) | 严谨软件工程技能套件主索引 — 包含 23 个任务剧本、23 个工程原则、多模型对抗审查、架构设计与行为级验证 |
+| [poteto-mode](./pstack/skills/poteto-mode/) | 严谨自动化软件工程主循环 — 全生命周期推进、自愈与多阶段实施 |
+| [setup-pstack](./pstack/skills/setup-pstack/) | pstack 环境初始化与模型路由配置（支持 Antigravity / DSH） |
+| [architect](./pstack/skills/architect/) | 架构设计决策与 ADR 生成 — 方案对抗推演与架构把关 |
+| [arena](./pstack/skills/arena/) | 多模型/多方案对抗评估 — 独立分支实施与胜者合并 |
+| [interrogate](./pstack/skills/interrogate/) | 代码审阅与对抗质询 — 严格发现缺陷与潜在风险 |
+| [reflect](./pstack/skills/reflect/) | 计划审阅与多视角把关 — 审查实施计划与技术方案 |
+| [show-me-your-work](./pstack/skills/show-me-your-work/) | 决策证据链记录 — 记录设计决策、权衡与验证结果 |
+| [create-verification-skill](./pstack/skills/create-verification-skill/) | 行为级验证技能编写 — 针对新功能沉淀可复用的验证逻辑 |
 
 ### 网页内容与数据采集
 
@@ -40,9 +56,20 @@
 
 ## 使用方式
 
-每个技能独立一个目录，包含 `SKILL.md`（使用说明）和对应的驱动脚本。
-直接在 Claude Code 中调用 `/run-<技能名>` 即可加载对应技能。
+每个技能独立一个目录，包含 `SKILL.md`（使用说明）及可选的辅助驱动脚本。
+
+### 在 Google Antigravity 中使用
+- 本仓库已在 `.agents/skills.json` 和 `.agents/plugins.json` 中配置好技能发现规则。
+- 在 Antigravity 中打开本仓库，即可自动发现所有技能。
+- 支持在对话中直接通过 `/<skill-name>` 调用（如 `/poteto-mode`, `/setup-pstack`, `/architect`, `/bms-create-ims`）。
+
+### 在 DeepSeek Harness (DSH) 中使用
+- 将相应技能目录或 `pstack/skills/` 挂载至 DSH 技能目录。
+- 智能体根据任务需求自动加载对应 `SKILL.md` 指令。
+
+### 在 Claude Code 中使用
+- 直接调用 `/<技能名>` 即可加载对应技能。
 
 ## 许可证
 
-内部使用
+内部使用 / pstack 沿用 MIT 许可证

@@ -1,0 +1,25 @@
+{
+  "name": "pstack",
+  "displayName": "pstack",
+  "version": "0.15.2",
+  "description": "Rigorous AI engineering workflows, playbooks, and principles adapted for Antigravity, DSH, and modern agent harnesses.",
+  "author": {
+    "name": "Lauren Tan (@poteto)"
+  },
+  "keywords": [
+    "pstack",
+    "poteto-mode",
+    "antigravity",
+    "dsh",
+    "deepseek",
+    "playbooks",
+    "principles",
+    "subagents",
+    "verification",
+    "unslop"
+  ],
+  "category": "developer-tools",
+  "rules": "./rules/",
+  "skills": "./skills/",
+  "agents": "./agents/"
+}

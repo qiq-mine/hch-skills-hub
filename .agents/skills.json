@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "path": "."
+    },
+    {
+      "path": "pstack"
+    },
+    {
+      "path": "pstack/skills"
+    }
+  ]
+}
