@@ -101,8 +101,3 @@
 ### 方式 2：拷贝至你的独立工程
 将本仓库的 `pstack/` 目录拷贝至你工程的 `.agents/skills/pstack` 或 `.agents/plugins/pstack` 即可生效。
 
----
-
-## 许可证
-
-本项目遵循 MIT 开源许可证。
