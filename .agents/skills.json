@@ -8,6 +8,12 @@
     },
     {
       "path": "pstack/skills"
+    },
+    {
+      "path": "open-code-review"
+    },
+    {
+      "path": "open-code-review/skills"
     }
   ]
 }

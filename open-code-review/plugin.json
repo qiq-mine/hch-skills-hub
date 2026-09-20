@@ -1,0 +1,22 @@
+{
+  "name": "open-code-review",
+  "displayName": "Open Code Review",
+  "version": "1.0.0",
+  "description": "Alibaba's AI-powered automated code review CLI and skills suite based on deterministic engineering and agent hybrid architecture.",
+  "author": {
+    "name": "Alibaba Group"
+  },
+  "keywords": [
+    "open-code-review",
+    "ocr",
+    "code-review",
+    "alibaba",
+    "antigravity",
+    "dsh",
+    "skills",
+    "diff-review",
+    "delegate-review"
+  ],
+  "category": "developer-tools",
+  "skills": "./skills/"
+}

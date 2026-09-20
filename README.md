@@ -1,8 +1,18 @@
 # skills-hub
 
-AI 智能体技能与插件集合 — 面向云基础设施运维部署、网页采集、AI视频制作与严谨软件工程工作流（原生适配 Google Antigravity、DeepSeek Harness (DSH) 与 Claude Code）。
+AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动化代码审查、网页采集、AI视频制作与严谨软件工程工作流（原生适配 Google Antigravity、DeepSeek Harness (DSH) 与 Claude Code）。
 
 ## 技能列表
+
+### 智能代码审查 (Alibaba Open Code Review)
+
+> 阿里巴巴开源 AI 代码审查工具，结合确定性工程与 Agent 混合驱动，提供行级精准审查与委托审查能力。
+
+| 技能 | 说明 |
+|------|------|
+| [open-code-review](./open-code-review/) | 阿里开源 AI 代码审查套件主索引 — 包含 CLI 驱动模式与 Agent 委托模式完整支持 |
+| [open-code-review (skill)](./open-code-review/skills/open-code-review/) | 完整 CLI 驱动审查 — 自动化 Git diff 提取、规则匹配、LLM 审查与行级评论输出 |
+| [open-code-review-delegate](./open-code-review/skills/open-code-review-delegate/) | 委托模式审查 — 由当前宿主 Agent 利用自身大模型推理，OCR 负责确定性规则匹配与文件筛选 |
 
 ### 华为云与昇腾 AI 基础设施
 

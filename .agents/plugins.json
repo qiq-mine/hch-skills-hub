@@ -2,6 +2,9 @@
   "entries": [
     {
       "path": "pstack"
+    },
+    {
+      "path": "open-code-review"
     }
   ]
 }

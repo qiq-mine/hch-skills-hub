@@ -1,6 +1,7 @@
 # pstack — Rigorous AI Engineering Workflows & Skills
 
-> Originally created by Lauren Tan ([@poteto](https://x.com/poteto)) | Adapted for Google Antigravity, DeepSeek Harness (DSH), and Claude Code.
+> Originally created by Lauren Tan ([@poteto](https://x.com/poteto)) | Adapted for Google Antigravity, DeepSeek Harness (DSH), and Claude Code.  
+> **[简体中文文档 (README_CN.md)](./README_CN.md)** | **[中文技能与原则全索引 (skills/README.md)](./skills/README.md)**
 
 There is a growing sense that AI writes too much slop code. Throughput without quality is not a goal to aspire to. If you want to go fast, go deep first.
 
