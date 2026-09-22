@@ -1,0 +1,27 @@
+{
+  "name": "dify",
+  "displayName": "Dify Engineering Skills",
+  "version": "1.0.0",
+  "description": "Dify production-grade software engineering, code review, component architecture, and automated testing skills suite.",
+  "author": {
+    "name": "langgenius"
+  },
+  "keywords": [
+    "dify",
+    "code-review",
+    "backend-code-review",
+    "frontend-code-review",
+    "frontend-testing",
+    "how-to-write-component",
+    "e2e-cucumber-playwright",
+    "sqlalchemy",
+    "react",
+    "typescript",
+    "vitest",
+    "playwright",
+    "cucumber"
+  ],
+  "category": "developer-tools",
+  "skills": "./skills/",
+  "docs": "./docs/"
+}

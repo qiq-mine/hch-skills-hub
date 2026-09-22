@@ -41,6 +41,19 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 | [show-me-your-work](./pstack/skills/show-me-your-work/) | 决策证据链记录 — 记录设计决策、权衡与验证结果 |
 | [create-verification-skill](./pstack/skills/create-verification-skill/) | 行为级验证技能编写 — 针对新功能沉淀可复用的验证逻辑 |
 
+### Dify 全栈工程规范与审查套件 (Dify Engineering Skills)
+
+> 源自全球顶级开源 LLM 应用开发平台 [langgenius/dify](https://github.com/langgenius/dify)，包含后端审查、前端审查、组件架构、行为单测与 E2E 自动化测试。
+
+| 技能 | 说明 |
+|------|------|
+| [dify](./dify/) | Dify 全栈软件工程规范套件主索引 — 包含 5 大专业技能、15 篇权威规范文档与 P0~P3 工业级缺陷分级 |
+| [backend-code-review](./dify/skills/backend-code-review/) | Python/Flask/SQLAlchemy 后端审查 — 架构分层、租户隔离、Repository 抽象、显式事务与并发锁保护 |
+| [frontend-code-review](./dify/skills/frontend-code-review/) | React/Next.js/TypeScript 前端审查 — A11y 无障碍、Dify UI 基元、TanStack Query 契约、重渲染优化 |
+| [how-to-write-component](./dify/skills/how-to-write-component/) | React/TypeScript 组件设计规范 — 所有权解耦、状态生命周期分级、次级浮层契约、Tailwind v4 标准 |
+| [frontend-testing](./dify/skills/frontend-testing/) | 前端行为级测试规范 — Vitest + RTL、行为测试优先 (Behavior over Implementation)、系统边界 Mock |
+| [e2e-cucumber-playwright](./dify/skills/e2e-cucumber-playwright/) | 端到端自动化测试 — Cucumber BDD (Gherkin) + Playwright、Web-first 异步断言、高保真真实浏览器测试 |
+
 ### 网页内容与数据采集
 
 | 技能 | 说明 |
@@ -71,10 +84,10 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 ### 在 Google Antigravity 中使用
 - 本仓库已在 `.agents/skills.json` 和 `.agents/plugins.json` 中配置好技能发现规则。
 - 在 Antigravity 中打开本仓库，即可自动发现所有技能。
-- 支持在对话中直接通过 `/<skill-name>` 调用（如 `/poteto-mode`, `/setup-pstack`, `/architect`, `/bms-create-ims`）。
+- 支持在对话中直接通过 `/<skill-name>` 调用（如 `/poteto-mode`, `/setup-pstack`, `/architect`, `/bms-create-ims`, `/dify`, `/backend-code-review`, `/frontend-code-review`）。
 
 ### 在 DeepSeek Harness (DSH) 中使用
-- 将相应技能目录或 `pstack/skills/` 挂载至 DSH 技能目录。
+- 将相应技能目录或 `pstack/skills/`、`dify/skills/` 挂载至 DSH 技能目录。
 - 智能体根据任务需求自动加载对应 `SKILL.md` 指令。
 
 ### 在 Claude Code 中使用
@@ -82,4 +95,4 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 
 ## 许可证
 
-内部使用 / pstack 沿用 MIT 许可证
+内部使用 / pstack 沿用 MIT 许可证 / open-code-review 与 dify 沿用 Apache-2.0 许可证
