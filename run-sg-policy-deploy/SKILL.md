@@ -1,20 +1,33 @@
 ---
 name: run-sg-policy-deploy
-description: Deploy security group port policy on Huawei Cloud — parse work order (text/image), query SG by dest IP name, add allow/deny rules without deleting existing rules
+description: Deploy security group port policy on Huawei Cloud — parse work order (text/image), query SG by dest IP name, fail-closed validation, cleanup expired rules, add allow/deny rules
 ---
 
 # 安全组端口策略开通工作流
 
-从开通工单（文本或图片）中提取策略信息，自动在华为云上查询以目的 IP 命名的安全组，并添加规则。**不会删除或修改已有规则。**
+从开通工单（文本或图片）中提取策略信息，自动在华为云上查询以目的 IP 命名的安全组，清理已过期规则后添加新规则。
+
+> ## ⚠️ 强制安全流程
+>
+> **任何生产执行前，必须先运行 `--dry-run` 输出完整 diff（含将被清理的过期规则清单），经人工确认无误后，再去掉 `--dry-run` 真实执行。**
+>
+> ```bash
+> # 1. 先 dry-run，人工逐项核对输出
+> python driver.py --text '<工单文本>' --dry-run
+> # 2. 人工确认后，再真实执行
+> python driver.py --text '<工单文本>'
+> ```
+>
+> fail-closed 原则：`动作` 与 `源IP` 为必填字段，缺失时脚本直接报错退出，**不会**默认放行或默认 `0.0.0.0/0`。
 
 **驱动脚本:** [`driver.py`](./driver.py)
 
 ## 工作流概述
 
 ```
-工单（文本/图片） → 解析策略字段 → 查询目的IP安全组 → 添加规则 → 输出结果
+工单（文本/图片） → 解析策略字段 → 查询目的IP安全组 → 清理过期规则 → 添加规则 → 输出结果
                                  ↓                      ↓
-                         安全组不存在则创建       原有规则完整保留
+                         安全组不存在则创建       未过期规则完整保留
 ```
 
 ## 前置条件
@@ -52,14 +65,15 @@ pip install huaweicloud-sdk-python-v3 pillow pytesseract
 
 | 字段 | 示例 | 说明 |
 |------|------|------|
-| 动作 | `允许` 或 `拒绝` | 对应 API 的 allow / deny |
-| 协议 | `tcp` / `udp` / `icmp` | 支持的协议类型 |
-| 源IP | `10.0.0.0/24` | 源地址 CIDR |
-| 目的IP | `192.168.1.100` | 用于命名安全组的关键字段** |
+| 动作 | `允许` 或 `拒绝` | **必填，无默认值**，缺失时脚本报错退出 |
+| 协议 | `tcp` / `udp` / `icmp` | 支持的协议类型，缺省 `tcp` |
+| 方向 | `入方向` / `出方向` | 可选，缺省 `ingress`（入方向） |
+| 源IP | `10.0.0.0/24` | **必填，无默认值**，缺失时脚本报错退出；不再默认 `0.0.0.0/0` |
+| 目的IP | `192.168.1.100` | **必填**，用于命名安全组的关键字段 |
 | 目的域名 | `api.example.com` | 可选，记录在规则描述中 |
-| 目的端口 | `80` 或 `443,8080` 或 `1-1000` | 单端口、列表或范围 |
+| 目的端口 | `80` 或 `443,8080` 或 `1-1000` | 单端口、列表或范围；逐项校验 1-65535 |
 | 开通原因 | `生产环境Web访问` | 写入规则描述 |
-| 策略有效期 | `2026-06-30` | 写入规则描述 |
+| 策略有效期 | `2026-06-30` | 写入规则描述（`valid_until:` 标记），到期后自动清理 |
 
 > **安全组命名规则:** 以目的 IP 命名，例如目的 IP 为 `192.168.1.100`，则安全组名为 `sg-192.168.1.100`。
 
@@ -93,7 +107,7 @@ python driver.py --text '
 目的端口：443
 开通原因：生产环境HTTPS访问
 策略有效期：2026-12-31
-'
+' --dry-run   # ← 先 dry-run，人工确认后再去掉该参数真实执行
 
 # 图片工单（需 OCR）
 python driver.py --image /path/to/ticket.png
@@ -139,16 +153,15 @@ request.name = [sg_name]
 response = client.list_security_groups(request)
 ```
 
-### 步骤 3: 判断方向
+### 步骤 3: 确定方向
 
-| 源IP | 目的IP | direction |
-|------|--------|-----------|
-| 非 0.0.0.0/0 | 本安全组 | `ingress`（入方向） |
-| 本安全组 | 外部 | `egress`（出方向） |
+方向由工单的 `方向` 字段显式指定（`入方向`/`出方向` 或 `ingress`/`egress`），缺省为 `ingress`（入方向）。
 
-默认逻辑: 如果源 IP 明确、目的 IP 匹配本安全组 → 入方向规则。
+### 步骤 4: 清理已过期规则（删除前先打印清单）
 
-### 步骤 4: 添加规则（不删除任何已有规则）
+真实执行时，脚本会先扫描该安全组内所有规则：凡描述中带有 `valid_until:` 标记且日期已过的规则，会先打印完整清单再删除。有效期无法解析的规则视为未过期（fail-safe，不删除）。`--dry-run` 模式下仅提示该行为，不执行删除。
+
+### 步骤 5: 添加规则（去重后添加）
 
 ```python
 rule = CreateSecurityGroupRuleOption(
@@ -166,7 +179,7 @@ request.body = CreateSecurityGroupRuleRequestBody(security_group_rule=rule)
 client.create_security_group_rule(request)
 ```
 
-### 步骤 5: 输出结果
+### 步骤 6: 输出结果
 
 ```json
 {
@@ -185,9 +198,14 @@ client.create_security_group_rule(request)
 
 ## 重要说明
 
-### 不删除已有规则
+### 规则删除策略：仅清理已过期规则
 
-脚本 **只会执行 CreateSecurityGroupRule（创建规则）**，不会调用 `DeleteSecurityGroupRule`。所有已存在的规则完整保留。
+脚本只会删除满足以下**全部**条件的规则：
+
+1. 规则描述中带有 `valid_until:` 标记；
+2. 标记后的日期早于今天。
+
+删除前会先打印完整清单。未标记有效期、或有效期无法解析的规则**永远不会**被删除。其他未过期规则完整保留。
 
 ### 安全组不存在时自动创建
 

@@ -1,5 +1,12 @@
 /**
  * 考试宝题目提取脚本（逐题翻页版 + 5字体解混淆）
+ *
+ * 说明：本文件为浏览器 Console 手动粘贴场景保留的独立副本，必须保持自包含
+ * （不得拆分为跨文件 import）。其 5 套混淆字体映射表与
+ * ../get-exam4ksb-list/examener_extractor.js 内容一致（2026-10-01 核对）；
+ * examener_collect.py 另内嵌了一份 Python 版 FONT_MAPS（同 5 个 key），三处
+ * 映射表如有更新请同步修改。
+ *
  * DOM结构：
  *   题目：div.qusetion-title
  *   选项容器：div.options-w

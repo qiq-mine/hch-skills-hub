@@ -87,7 +87,6 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 | 技能 | 说明 |
 |------|------|
 | [creating-architecture-web-explainers](./creating-architecture-web-explainers/) | 架构 Web 交互式解释器制作 — 将技术栈与架构流转转为中文单文件 Web 解释器或 Archscribe 图 |
-| [pmo-methodology](./pmo-methodology/) | 项目管理公约与项目实施方法论 — 涵盖实施六阶段、交付物标准及六大管理公约 |
 
 ## 使用方式
 

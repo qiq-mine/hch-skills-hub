@@ -5,6 +5,10 @@ description: Collect exam questions from examener website via browser automation
 
 # 考试宝题目采集（浏览器自动化）
 
+> **Compliance notice**: This skill may only be used with question banks you **own or are explicitly authorized** to collect. Please review and comply with the target site's Terms of Service and copyright requirements before use; do not use it to scrape commercial question banks owned by others. You assume all legal risk arising from such use.
+>
+> **合规声明**：本技能仅限用于你**自有或已获明确授权**的题库场景。使用前请确认已阅读并遵守目标站点的服务条款（ToS）与版权要求；不得用于抓取他人享有版权的商业题库内容。由此产生的法律风险由使用者自行承担。
+
 Automatically extract exam questions from the 考试宝 (examener) website
 using browser automation. Handles **5 custom font obfuscation maps** that
 the site uses to prevent copying — decodes them automatically, paginates
