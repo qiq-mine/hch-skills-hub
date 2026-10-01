@@ -54,6 +54,18 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 | [frontend-testing](./dify/skills/frontend-testing/) | 前端行为级测试规范 — Vitest + RTL、行为测试优先 (Behavior over Implementation)、系统边界 Mock |
 | [e2e-cucumber-playwright](./dify/skills/e2e-cucumber-playwright/) | 端到端自动化测试 — Cucumber BDD (Gherkin) + Playwright、Web-first 异步断言、高保真真实浏览器测试 |
 
+### 企业级 AI Agent 架构与工程化技能 (oh- 系列)
+
+> 深度解构并融合 GitHub 顶级 AI Agent 生态开源项目的企业级工程范式与架构资产。
+
+| 技能 | 说明 |
+|------|------|
+| [oh-ponytail](./oh-ponytail/) | 极简代码阶梯法（反过度工程）— 7 阶决策梯、YAGNI 实践、去冗余抽象、专项过度设计审查（源自 ponytail） |
+| [oh-context-mode](./oh-context-mode/) | 上下文防爆优化与代码计算范式 — Think in Code、沙箱隔离执行、SQLite FTS5/BM25 检索、节省 98% Context（源自 context-mode） |
+| [oh-teamai](./oh-teamai/) | 团队级 AI 资产中台与配置协同治理 — 统一 Skills/Rules/MCP、跨 16+ Agent 工具同步、团队 Wiki 逆向与会话经验回流（源自 Tencent teamai-cli） |
+| [oh-ruflo](./oh-ruflo/) | 企业级多智能体协同底座与蜂群编排 — Model + Harness 架构、分层防漂移蜂群、3 阶模型路由与长效向量记忆（源自 ruflo） |
+| [oh-marketing-growth](./oh-marketing-growth/) | 技术产品营销与增长工程流 — 转化率优化 (CRO)、高转化文案 (PAS/BAB)、AI-SEO 知识引擎优化、爆款 README 与冷启动（源自 marketingskills） |
+
 ### 网页内容与数据采集
 
 | 技能 | 说明 |
