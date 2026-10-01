@@ -40,6 +40,20 @@ export ESM_APPCODE="<apig-appcode>"
 export ESM_DOMAIN_ID="<esm-tenant-id>"
 ```
 
+### 2.1 TLS 证书校验（内网自签场景）
+
+默认开启 TLS 证书校验。如服务端使用内网自签证书，有两种处理方式（推荐第一种）：
+
+```bash
+# 推荐：指定自签 CA 证书路径，保持校验开启
+export SSL_CA_BUNDLE="/path/to/internal-ca.pem"
+
+# 不推荐：仅在测试环境临时关闭校验
+export VERIFY_SSL="false"
+```
+
+> `VERIFY_SSL` 缺省为 `true`；`SSL_CA_BUNDLE` 设置后优先于 `VERIFY_SSL` 生效。
+
 ### 3. Python 依赖
 
 ```bash
