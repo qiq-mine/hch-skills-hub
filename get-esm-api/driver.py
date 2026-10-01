@@ -8,6 +8,9 @@ Usage:
   export ECS_PROJECT_ID="<project-id>"
   export ESM_BASE_URL="https://esm-api.cn-south-298.myhuaweicloud.com"
   export ESM_APPCODE="<appcode>" ESM_DOMAIN_ID="<domain-id>"
+  # TLS 校验（可选）：默认开启；内网自签证书场景见下文
+  # export VERIFY_SSL="false"
+  # export SSL_CA_BUNDLE="/path/to/internal-ca.pem"
 
   python driver.py capacity --service-type ECS_VM
   python driver.py audit-log --begin "2026-06-01" --end "2026-06-09"
@@ -49,6 +52,22 @@ class Config:
     ESM_BASE_URL = os.environ.get("ESM_BASE_URL", "").rstrip("/")
     ESM_APPCODE = os.environ.get("ESM_APPCODE", "")
     ESM_DOMAIN_ID = os.environ.get("ESM_DOMAIN_ID", "")
+    # TLS 证书校验：默认开启。内网自签证书场景可设 VERIFY_SSL=false，
+    # 或（推荐）用 SSL_CA_BUNDLE 指定自签 CA 证书路径。
+    VERIFY_SSL = os.environ.get("VERIFY_SSL", "true").strip().lower() not in (
+        "0", "false", "no", "off")
+    SSL_CA_BUNDLE = os.environ.get("SSL_CA_BUNDLE", "").strip()
+
+
+def ssl_verify():
+    """
+    返回 httpx 的 verify 参数：
+    - 指定了 SSL_CA_BUNDLE → 用该 CA 路径校验（推荐的内网自签方案）
+    - 否则按 VERIFY_SSL 开关（默认 True）
+    """
+    if Config.SSL_CA_BUNDLE:
+        return Config.SSL_CA_BUNDLE
+    return Config.VERIFY_SSL
 
 
 # ======================================================================
@@ -82,7 +101,7 @@ class EsmClient:
             }
         }
         logger.info("获取 IAM Token ...")
-        resp = httpx.post(url, json=payload, verify=False, timeout=30)
+        resp = httpx.post(url, json=payload, verify=ssl_verify(), timeout=30)
         resp.raise_for_status()
         token = resp.headers.get("x-subject-token", "")
         if not token:
@@ -120,7 +139,7 @@ class EsmClient:
             try:
                 resp = httpx.request(
                     method, url, headers=full_headers,
-                    verify=False, timeout=30, **kwargs,
+                    verify=ssl_verify(), timeout=30, **kwargs,
                 )
                 if resp.status_code == 401 and attempt == 0:
                     logger.warning("Token 失效 (401)，正在刷新 ...")
