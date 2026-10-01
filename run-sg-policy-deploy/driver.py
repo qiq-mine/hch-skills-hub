@@ -5,11 +5,18 @@
 从工单（文本/图片/YAML）中解析策略信息，自动：
 1. 查询以目的 IP 命名的安全组 (sg-{dest_ip})
 2. 如果不存在则自动创建
-3. 添加安全组规则（不会删除或修改已有规则）
-4. 输出开通结果
+3. 清理描述中带有 valid_until 且已过期的旧规则
+4. 添加安全组规则（不会删除或修改未过期的已有规则）
+5. 输出开通结果
+
+安全原则（fail-closed）:
+- action 缺失时直接报错退出，不再默认 allow
+- source_ip 为必填字段，不再默认 0.0.0.0/0
+- 所有 IP / CIDR / 端口在调用 API 前做格式校验
 
 使用方式:
-  python driver.py --text '<工单文本>'
+  python driver.py --text '<工单文本>' --dry-run   # 先 dry-run，人工确认
+  python driver.py --text '<工单文本>'             # 人工确认后再真实执行
   python driver.py --image /path/to/ticket.png
   python driver.py --file /path/to/ticket.yaml
 
@@ -21,10 +28,12 @@
 """
 
 import argparse
+import ipaddress
 import json
 import os
 import re
 import sys
+from datetime import datetime, date
 
 # lazy imports for huaweicloud SDK — only needed when making API calls
 # yaml is only needed for --file input
@@ -67,6 +76,17 @@ PROTOCOL_MAP = {
     "icmpv6": "icmpv6",
     "ICMPV6": "icmpv6",
 }
+
+# 过期标记写入规则 description，用于 cleanup_expired 扫描
+EXPIRY_MARKER = "valid_until:"
+
+# 支持的有效期日期格式（按优先级尝试）
+EXPIRY_DATE_FORMATS = (
+    "%Y-%m-%d",
+    "%Y-%m-%d %H:%M:%S",
+    "%Y/%m/%d",
+    "%Y-%m-%dT%H:%M:%S",
+)
 
 
 # ---------------------------------------------------------------------------
@@ -111,12 +131,14 @@ def parse_work_order_text(text: str) -> dict:
         "dest_port": None,
         "reason": None,
         "expiry": None,
+        "direction": None,
     }
 
     # 字段名映射（支持多种中文/英文写法）
     key_map = {
         "动作": "action", "action": "action", "操作": "action", "策略": "action",
         "协议": "protocol", "protocol": "protocol",
+        "方向": "direction", "direction": "direction",
         "源ip": "source_ip", "源IP": "source_ip", "源地址": "source_ip",
         "source_ip": "source_ip", "source ip": "source_ip",
         "目的ip": "dest_ip", "目的IP": "dest_ip", "目标ip": "dest_ip",
@@ -170,6 +192,7 @@ def parse_work_order_yaml(filepath: str) -> dict:
     field_map = {
         "action": "action",
         "protocol": "protocol",
+        "direction": "direction",
         "source_ip": "source_ip",
         "dest_ip": "dest_ip",
         "dest_domain": "dest_domain",
@@ -216,15 +239,78 @@ def parse_work_order_image(image_path: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# 校验工具
+# ---------------------------------------------------------------------------
+
+def validate_port_spec(port_spec: str) -> str:
+    """
+    校验端口规格：支持单端口 / 逗号列表 / 范围（如 80, 443,8080, 1-1000）
+    返回规范化后的字符串；非法则抛 ValueError
+    """
+    if port_spec is None or not str(port_spec).strip():
+        raise ValueError("目的端口 (dest_port) 不能为空")
+
+    tokens = [t.strip() for t in str(port_spec).split(",") if t.strip()]
+    if not tokens:
+        raise ValueError(f"无法解析的端口规格: {port_spec!r}")
+
+    normalized = []
+    for token in tokens:
+        if "-" in token:
+            parts = token.split("-")
+            if len(parts) != 2 or not all(p.isdigit() for p in parts):
+                raise ValueError(f"非法端口范围: {token!r}，应为 起始-结束（如 1-1000）")
+            start, end = int(parts[0]), int(parts[1])
+            if not (1 <= start <= end <= 65535):
+                raise ValueError(
+                    f"端口范围越界: {token!r}，端口必须在 1-65535 之间且起始 <= 结束"
+                )
+            normalized.append(f"{start}-{end}")
+        else:
+            if not token.isdigit():
+                raise ValueError(f"非法端口: {token!r}，应为 1-65535 的数字")
+            port = int(token)
+            if not 1 <= port <= 65535:
+                raise ValueError(f"端口越界: {token!r}，必须在 1-65535 之间")
+            normalized.append(str(port))
+
+    return ",".join(normalized)
+
+
+def parse_expiry_date(expiry_str: str):
+    """解析有效期字符串为 date；无法解析返回 None（fail-safe：不删除）"""
+    if not expiry_str:
+        return None
+    s = expiry_str.strip()
+    for fmt in EXPIRY_DATE_FORMATS:
+        try:
+            return datetime.strptime(s, fmt).date()
+        except ValueError:
+            continue
+    # 尝试 ISO 格式兜底
+    try:
+        return datetime.fromisoformat(s).date()
+    except ValueError:
+        return None
+
+
+# ---------------------------------------------------------------------------
 # 标准化字段
 # ---------------------------------------------------------------------------
 
 def normalize_fields(fields: dict) -> dict:
-    """标准化解析后的字段值"""
+    """
+    标准化解析后的字段值。
+
+    安全原则（fail-closed）:
+    - action 缺失 → 报错退出，不默认 allow
+    - source_ip 缺失 → 报错退出，不默认 0.0.0.0/0
+    - 所有 IP / CIDR / 端口做格式校验
+    """
     result = dict(fields)
 
-    # 标准 action
-    if fields["action"]:
+    # 标准 action —— 缺失直接报错，不设默认值
+    if fields.get("action"):
         action_lower = fields["action"].strip().lower()
         for alias, val in ACTION_MAP.items():
             if action_lower == alias.lower():
@@ -233,10 +319,13 @@ def normalize_fields(fields: dict) -> dict:
         else:
             raise ValueError(f"无法识别的动作: {fields['action']}，应为 允许/拒绝 或 allow/deny")
     else:
-        result["action"] = "allow"  # 默认允许
+        raise ValueError(
+            "动作 (action) 是必填字段：必须明确指定 允许/拒绝 (allow/deny)，"
+            "不提供默认值以防误放行"
+        )
 
     # 标准 protocol
-    if fields["protocol"]:
+    if fields.get("protocol"):
         proto = fields["protocol"].strip().lower()
         for alias, val in PROTOCOL_MAP.items():
             if proto == alias.lower():
@@ -251,29 +340,60 @@ def normalize_fields(fields: dict) -> dict:
     else:
         result["protocol"] = "tcp"  # 默认 TCP
 
-    # 标准化 CIDR
-    if fields["source_ip"]:
+    # 标准 direction —— 工单可显式指定方向，缺省入方向
+    if fields.get("direction"):
+        dir_lower = fields["direction"].strip().lower()
+        for alias, val in DIRECTION_MAP.items():
+            if dir_lower == alias.lower():
+                result["direction"] = val
+                break
+        else:
+            raise ValueError(
+                f"无法识别的方向: {fields['direction']}，应为 入方向/出方向 或 ingress/egress"
+            )
+    else:
+        result["direction"] = "ingress"
+
+    # 校验并标准化 source CIDR —— 必填，不再默认 0.0.0.0/0
+    if fields.get("source_ip"):
         src = fields["source_ip"].strip()
         if "/" not in src:
-            # 单个 IP 转为 /32
-            result["source_ip"] = f"{src}/32"
-        else:
-            result["source_ip"] = src
+            src = f"{src}/32"  # 单个 IP 转为 /32
+        try:
+            result["source_ip"] = str(ipaddress.ip_network(src, strict=False))
+        except ValueError:
+            raise ValueError(f"非法源 IP/CIDR: {fields['source_ip']!r}")
+    else:
+        raise ValueError(
+            "源 IP (source_ip) 是必填字段：必须明确指定来源 CIDR（如 10.0.0.0/24），"
+            "出于安全考虑不再默认 0.0.0.0/0（全网开放）"
+        )
 
-    # 安全组名 = sg-{dest_ip}
-    if fields["dest_ip"]:
-        result["sg_name"] = f"sg-{fields['dest_ip'].strip()}"
+    # 校验 dest_ip 并构建安全组名 = sg-{dest_ip}
+    if fields.get("dest_ip"):
+        dest = fields["dest_ip"].strip()
+        try:
+            ipaddress.ip_address(dest)
+        except ValueError:
+            raise ValueError(f"非法目的 IP: {dest!r}，应为合法 IPv4/IPv6 地址")
+        result["sg_name"] = f"sg-{dest}"
     else:
         raise ValueError("目的 IP (dest_ip) 是必填字段")
 
-    # 构建描述信息
+    # 校验端口
+    if fields.get("dest_port"):
+        result["dest_port"] = validate_port_spec(fields["dest_port"])
+    else:
+        result["dest_port"] = ""
+
+    # 构建描述信息（expiry 以 valid_until: 标记写入，供 cleanup_expired 扫描）
     desc_parts = []
     if fields.get("reason"):
         desc_parts.append(fields["reason"].strip())
     if fields.get("dest_domain"):
         desc_parts.append(f"dest_domain:{fields['dest_domain'].strip()}")
     if fields.get("expiry"):
-        desc_parts.append(f"valid_until:{fields['expiry'].strip()}")
+        desc_parts.append(f"{EXPIRY_MARKER}{fields['expiry'].strip()}")
     result["description"] = " | ".join(desc_parts) if desc_parts else "Created by sg-policy-deploy"
 
     return result
@@ -347,6 +467,86 @@ def check_rule_exists(client, sg_id: str, fields: dict) -> bool:
     return False
 
 
+def extract_expiry(description: str):
+    """从规则描述中提取 valid_until 标记后的日期字符串"""
+    if not description or EXPIRY_MARKER not in description:
+        return None
+    m = re.search(re.escape(EXPIRY_MARKER) + r"\s*([^\s|]+)", description)
+    return m.group(1) if m else None
+
+
+def cleanup_expired(client, sg_id: str, dry_run: bool = False) -> list:
+    """
+    扫描安全组内规则，删除描述中带有 valid_until 标记且已过期的规则。
+
+    - 删除前先打印将被删除的规则清单（人工可见）
+    - dry_run=True 时仅打印清单，不执行删除
+    - 有效期无法解析的规则视为未过期（fail-safe，不删除）
+    - 返回已删除（或 dry-run 下将删除）的规则 ID 列表
+    """
+    from huaweicloudsdkvpc.v3.model import (
+        DeleteSecurityGroupRuleRequest,
+        ListSecurityGroupRulesRequest,
+    )
+
+    expired = []
+    try:
+        req = ListSecurityGroupRulesRequest()
+        req.security_group_id = [sg_id]
+        resp = client.list_security_group_rules(req)
+        rules = resp.security_group_rules or []
+    except Exception as e:
+        print(f"[WARN] 查询规则列表失败，跳过过期清理: {e}", file=sys.stderr)
+        return expired
+
+    today = date.today()
+    for rule in rules:
+        expiry_str = extract_expiry(getattr(rule, "description", "") or "")
+        if not expiry_str:
+            continue
+        expiry_date = parse_expiry_date(expiry_str)
+        if expiry_date is None:
+            print(
+                f"[WARN] 规则 {rule.id} 的有效期 {expiry_str!r} 无法解析，"
+                "视为未过期，跳过删除",
+                file=sys.stderr,
+            )
+            continue
+        if expiry_date < today:
+            expired.append(rule)
+
+    if not expired:
+        print("[INFO] 未发现已过期的规则，无需清理")
+        return []
+
+    # 先输出将被删除的规则清单
+    print("\n[CLEANUP] 以下规则已过期，将被删除:")
+    for rule in expired:
+        print(
+            f"  - id={rule.id} direction={getattr(rule, 'direction', '?')} "
+            f"protocol={getattr(rule, 'protocol', '?')} port={getattr(rule, 'multiport', '?')} "
+            f"source={getattr(rule, 'remote_ip_prefix', '?')} "
+            f"description={getattr(rule, 'description', '')!r}"
+        )
+
+    if dry_run:
+        print("[DRY RUN] 以上规则在真实执行时将被删除，本次不执行")
+        return [r.id for r in expired]
+
+    deleted = []
+    for rule in expired:
+        try:
+            del_req = DeleteSecurityGroupRuleRequest()
+            del_req.security_group_rule_id = rule.id
+            client.delete_security_group_rule(del_req)
+            print(f"[INFO] 已删除过期规则 {rule.id}")
+            deleted.append(rule.id)
+        except Exception as e:
+            print(f"[ERROR] 删除过期规则 {rule.id} 失败: {e}", file=sys.stderr)
+
+    return deleted
+
+
 def add_security_group_rule(client, sg_id: str, fields: dict) -> str:
     """添加安全组规则，返回规则 ID"""
     from huaweicloudsdkvpc.v3.model import (
@@ -386,7 +586,7 @@ def deploy_policy(fields: dict, dry_run: bool = False) -> dict:
     执行端口策略开通主流程
 
     参数:
-        fields: 标准化的策略字段字典
+        fields: 标准化的策略字段字典（normalize_fields 已做 fail-closed 校验）
         dry_run: 仅打印操作而不真正执行 API 调用
 
     返回:
@@ -404,24 +604,19 @@ def deploy_policy(fields: dict, dry_run: bool = False) -> dict:
 
     if dry_run:
         print("[DRY RUN] 模式，仅打印，不执行 API 调用")
+        print("[DRY RUN] 注意：真实执行时会自动清理已过期规则"
+              f"（规则描述含 {EXPIRY_MARKER} 且日期已过）")
         return {"status": "dry_run", "fields": fields}
 
     # 创建客户端
     client = get_vpc_client()
     sg_name = fields["sg_name"]
     dest_ip = fields["dest_ip"]
-    source_ip = fields.get("source_ip", "0.0.0.0/0")
+    source_ip = fields["source_ip"]  # normalize_fields 已保证必填
     action = fields["action"]
     protocol = fields["protocol"]
     port = fields.get("dest_port", "")
-
-    # 推测方向
-    # 如果源 IP 是特定地址（非 0.0.0.0/0），通常是入方向规则
-    if source_ip and source_ip != "0.0.0.0/0":
-        direction = "ingress"
-    else:
-        direction = "ingress"  # 默认入方向
-    fields["direction"] = direction
+    direction = fields.get("direction", "ingress")
     print(f"[INFO] 规则方向: {direction}")
 
     # 步骤 1: 查询安全组
@@ -433,7 +628,10 @@ def deploy_policy(fields: dict, dry_run: bool = False) -> dict:
         # 步骤 2 (条件): 创建安全组
         sg_id = create_security_group(client, sg_name, dest_ip)
 
-    # 步骤 3: 去重检查
+    # 步骤 3: 清理已过期规则（删除前会先打印清单）
+    cleaned = cleanup_expired(client, sg_id, dry_run=False)
+
+    # 步骤 4: 去重检查
     if check_rule_exists(client, sg_id, fields):
         print(f"[INFO] 规则已存在，跳过添加")
         return {
@@ -441,12 +639,13 @@ def deploy_policy(fields: dict, dry_run: bool = False) -> dict:
             "reason": "rule_already_exists",
             "security_group": sg_name,
             "security_group_id": sg_id,
+            "cleaned_expired_rules": cleaned,
         }
 
-    # 步骤 4: 添加规则
+    # 步骤 5: 添加规则
     rule_id = add_security_group_rule(client, sg_id, fields)
 
-    # 步骤 5: 输出结果
+    # 步骤 6: 输出结果
     result = {
         "status": "success",
         "security_group": sg_name,
@@ -458,6 +657,7 @@ def deploy_policy(fields: dict, dry_run: bool = False) -> dict:
         "port": port,
         "direction": direction,
         "description": fields["description"],
+        "cleaned_expired_rules": cleaned,
     }
 
     print(f"\n{'='*60}")
@@ -496,13 +696,12 @@ def main():
     else:
         parser.error("请指定 --text, --image 或 --file")
 
-    # 校验必填字段
-    if not raw.get("dest_ip"):
-        print("[ERROR] 目的 IP (dest_ip) 是必填字段，请检查工单内容", file=sys.stderr)
+    # 标准化（含 fail-closed 校验：action / source_ip / dest_ip / 端口）
+    try:
+        fields = normalize_fields(raw)
+    except ValueError as e:
+        print(f"[ERROR] 工单校验失败: {e}", file=sys.stderr)
         sys.exit(1)
-
-    # 标准化
-    fields = normalize_fields(raw)
 
     # 执行部署
     try:
