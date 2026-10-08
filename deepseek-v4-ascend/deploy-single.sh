@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# deploy.sh — Deploy DeepSeek-V4-Flash on Ascend (single node) with vllm-ascend
+# deploy-single.sh — Deploy DeepSeek-V4 on Ascend (single node) with vllm-ascend
+# (merged from run-deepseek-v4-flash/deploy.sh)
 #
 # Usage:
 #   ./deploy.sh \

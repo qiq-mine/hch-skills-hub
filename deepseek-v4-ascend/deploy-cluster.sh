@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# deploy.sh — Deploy DeepSeek-V4-Pro on multi-node Ascend cluster with vllm-ascend
+# deploy-cluster.sh — Deploy DeepSeek-V4 on multi-node Ascend cluster with vllm-ascend
+# (merged from run-deepseek-v4-pro/deploy.sh)
 #
 # Generates the Slurm job scripts (node.sh + srun.sh), submits, and tails logs.
 #
