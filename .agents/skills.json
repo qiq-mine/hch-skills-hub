@@ -20,6 +20,9 @@
     },
     {
       "path": "dify/skills"
+    },
+    {
+      "path": "ai-native-repo"
     }
   ]
 }
