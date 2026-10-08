@@ -78,8 +78,7 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 
 | 技能 | 说明 |
 |------|------|
-| [get-exam4ksb-list](./get-exam4ksb-list/) | 考试宝(ksb)题目提取原始 JS 脚本（浏览器 Console 运行，支持混淆字体解码与导出） |
-| [run-exam4ksb-collect](./run-exam4ksb-collect/) | 考试宝(ksb)浏览器自动化采集 — Playwright、混淆字体解码、翻页提取与截图 |
+| [exam4ksb-extract](./exam4ksb-extract/) | 考试宝题目提取 — 浏览器 Console 脚本（轻量零安装）与 Playwright 自动化采集（无头批量）双模式，5 套混淆字体解码、自动翻页去重、JSON+Markdown 导出 |
 
 ### AI 课程与视频内容生产
 
