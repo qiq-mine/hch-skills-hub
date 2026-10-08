@@ -1,6 +1,6 @@
 ---
 name: interrogate
-description: "Use for 'interrogate', 'adversarial review', 'multi-model review', 'challenge this', 'stress test this code', 'find blind spots', or 'tear this apart'. Multiple reviewers challenge changes from independent angles."
+description: "Use for 'interrogate', 'adversarial review', 'multi-model review', 'challenge this', 'stress test this code', 'find blind spots', or 'tear this apart'. Multiple reviewers challenge changes from independent angles. No ocr CLI required (pure-LLM). For deterministic rule-based review via the ocr CLI use open-code-review; for Python/React stack-specific checklists use dify's backend-code-review / frontend-code-review."
 ---
 
 # Interrogate

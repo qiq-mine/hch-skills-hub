@@ -1,6 +1,6 @@
 ---
 name: frontend-code-review
-description: "Dify 前端代码审查技能。面向 React/Next.js/TypeScript 与 Dify UI/Tailwind CSS 体系，审查可访问性 (a11y)、UI 契约、组件架构、状态管理、TanStack Query 数据请求、运行时不变量与性能开销。支持 Git diff、特定文件或提交审查。分级输出 P0-P3 缺陷。Triggers: frontend-code-review, /frontend-code-review, 前端审查, 前端代码审查, React代码审查, 组件审查."
+description: "Dify 前端代码审查技能。面向 React/Next.js/TypeScript 与 Dify UI/Tailwind CSS 体系，审查可访问性 (a11y)、UI 契约、组件架构、状态管理、TanStack Query 数据请求、运行时不变量与性能开销。支持 Git diff、特定文件或提交审查。分级输出 P0-P3 缺陷。Triggers: frontend-code-review, /frontend-code-review, 前端审查, 前端代码审查, React代码审查, 组件审查. 非 React 技术栈的通用审查：用 open-code-review（需 ocr CLI，确定性规则）或 pstack 的 interrogate（纯 LLM 多模型对抗）。"
 ---
 
 # Frontend Code Review (Dify 前端工程审查)

@@ -1,6 +1,6 @@
 ---
 name: open-code-review
-description: "阿里巴巴开源 AI 代码审查工具 suite（确定性工程 × Agent 混合驱动）。支持使用 `ocr` CLI 对 Git diff、指定 commit、分支对比或全量代码文件进行行级精准审查，支持全自动模式与委托模式（由宿主 Agent 执行审查、OCR 执行确定性规则匹配）。Triggers: open-code-review, ocr, 代码审查, code review, 审查代码, PR review."
+description: "阿里巴巴开源 AI 代码审查工具 suite（确定性工程 × Agent 混合驱动）。支持使用 `ocr` CLI 对 Git diff、指定 commit、分支对比或全量代码文件进行行级精准审查，支持全自动模式与委托模式（由宿主 Agent 执行审查、OCR 执行确定性规则匹配）。Triggers: open-code-review, ocr, 代码审查, code review, 审查代码, PR review. 选型指路：无 ocr CLI 环境时用 pstack 的 interrogate（纯 LLM 多模型对抗审查）；Python/React 技术栈专项清单用 dify 的 backend-code-review / frontend-code-review。"
 license: Apache-2.0
 compatibility: "支持 Google Antigravity, DeepSeek Harness (DSH), Claude Code, Cursor 及命令行 CLI。需安装 ocr CLI (npm install -g @alibaba-group/open-code-review 或 GitHub release)。"
 metadata:
