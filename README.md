@@ -41,6 +41,14 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 | [show-me-your-work](./pstack/skills/show-me-your-work/) | 决策证据链记录 — 记录设计决策、权衡与验证结果 |
 | [create-verification-skill](./pstack/skills/create-verification-skill/) | 行为级验证技能编写 — 针对新功能沉淀可复用的验证逻辑 |
 
+### AI Native Repo 团队标准
+
+> 团队级 AI 编程仓库工程标准：目录结构、指令文件、契约与工作流规范（草案 v0.1，详见 hch-agentic-esm PR #3）。
+
+| 技能 | 说明 |
+|------|------|
+| [ai-native-repo](./ai-native-repo/) | AI Native Repo 团队标准 — 仓库级 agent 工程规范：目录结构（M/R 分级）、AGENTS.md、harness.yaml、spec/CodeSpec、changes/ 提案流、SDD 五阶段与检查清单 |
+
 ### Dify 全栈工程规范与审查套件 (Dify Engineering Skills)
 
 > 源自全球顶级开源 LLM 应用开发平台 [langgenius/dify](https://github.com/langgenius/dify)，包含后端审查、前端审查、组件架构、行为单测与 E2E 自动化测试。
