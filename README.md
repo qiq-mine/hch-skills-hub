@@ -84,8 +84,7 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 | 技能 | 说明 |
 |------|------|
 | [deeplearn-vp-create](./deeplearn-vp-create/) | DeepLearning.AI 课程视频制作全流程 — 字幕提取、翻译旁白、故事板审阅、TTS配音与Remotion渲染 |
-| [dl-ai-lesson-create](./dl-ai-lesson-create/) | DL.AI 课程视频制作 — Python + Pillow + ffmpeg 确定性渲染器与 DashScope 语音合成 |
-| [dl-ai-lesson-remotion](./dl-ai-lesson-remotion/) | Remotion AI 课程视频制作 — 审阅优先(Review-First)工作流、原生1080p渲染与课程封面生成 |
+| [dl-ai-lesson](./dl-ai-lesson/) | DL.AI 课程视频制作 — 中文 AI 技术讲解视频，Python/Pillow/ffmpeg 确定性渲染与 Remotion 审阅优先二选一 |
 | [video](./video/) | AI 视频制作与编程式视频生成 — Remotion/Hyperframes、AI Avatars (HeyGen) 及生成大模型 |
 
 ### 架构可视化与项目管理

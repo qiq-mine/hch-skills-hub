@@ -110,11 +110,12 @@ cmd.exe /c "C:\Python314\python.exe -m edge_tts --voice zh-CN-YunyangNeural --ra
 
 ## Phase 4：Remotion 项目
 
+> Remotion 通用渲染规范（审阅优先流程、工程结构、渲染命令）见 `dl-ai-lesson` skill 的渲染器 B；
+> 以下只保留本搬运链路特有的约定（7 场景结构、主题 token、字幕时序、小红书卡片、批量工作流）。
+
 ### 环境要求
 
-- Node.js 18+（v20/v22 LTS 最稳定；v24 可用但 Remotion CLI 的 ffprobe 子命令有兼容问题）
-- **TypeScript 必须 5.x**（7.x 与 Remotion bundler 的 esbuild-loader 不兼容，报 `typescript.sys.readFile undefined`）
-- 依赖：`remotion @remotion/cli @remotion/transitions react react-dom typescript@5.8`
+通用环境与审阅流程见 `dl-ai-lesson`（渲染器 B）。本链路硬性要求：**TypeScript 必须 5.x**（7.x 报 `typescript.sys.readFile undefined`）；Node v24 下 `npx remotion ffprobe` 不兼容，用独立 ffmpeg 或降级 Node v20/v22。
 
 ### 项目结构（多集模式）
 
