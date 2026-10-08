@@ -1,6 +1,6 @@
 ---
 name: pstack
-description: "pstack 严谨软件工程技能套件（深度适配 Antigravity / DSH / Claude Code）。包含 23 个工程原则 (principles)、23 个任务剧本 (playbooks)、模型分工调度 (setup-pstack / poteto-mode)、架构设计 (architect)、多模型对抗审查 (interrogate / arena / swarm)、代码去水 (unslop / no-comments) 及独立验证体系。当用户需要高质量代码交付、严谨排错、多模型协作或自动化开发流时使用。Triggers: pstack, poteto-mode, /setup-pstack, 严谨工程, 对抗审查, 架构设计, unslop, fearless parallelism."
+description: "pstack 严谨软件工程技能套件（深度适配 Antigravity / DSH / Claude Code）。包含 23 个工程原则 (principles)、23 个任务剧本 (playbooks)、模型分工调度 (setup-pstack / poteto-mode)、架构设计 (architect)、多模型对抗审查 (interrogate / arena / swarm)、代码去水 (unslop / no-comments) 及独立验证体系。当用户需要高质量代码交付、严谨排错、多模型协作或自动化开发流时使用。Triggers: pstack, poteto-mode, /setup-pstack, 严谨工程, 对抗审查, 架构设计, unslop, fearless parallelism. 仓库结构与团队规范层面见 ai-native-repo（AI Native Repo 标准：目录/AGENTS.md/harness/spec/SDD）。"
 ---
 
 # pstack — 严谨工程与多智能体协作技能套件

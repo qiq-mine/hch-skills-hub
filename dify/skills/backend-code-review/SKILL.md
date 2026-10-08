@@ -1,6 +1,6 @@
 ---
 name: backend-code-review
-description: "Dify 后端代码审查技能。面向 Python/Flask/SQLAlchemy 架构，审查控制器、服务层、领域模型、存储库抽象、数据库迁移与并发保护。支持 Git 变更、特定文件或 diff 审查。分级输出 P0-P3 缺陷。Triggers: backend-code-review, /backend-code-review, 后端审查, 后端代码审查, SQLAlchemy审查, 数据库迁移审查."
+description: "Dify 后端代码审查技能。面向 Python/Flask/SQLAlchemy 架构，审查控制器、服务层、领域模型、存储库抽象、数据库迁移与并发保护。支持 Git 变更、特定文件或 diff 审查。分级输出 P0-P3 缺陷。Triggers: backend-code-review, /backend-code-review, 后端审查, 后端代码审查, SQLAlchemy审查, 数据库迁移审查. 非 Python 技术栈的通用审查：用 open-code-review（需 ocr CLI，确定性规则）或 pstack 的 interrogate（纯 LLM 多模型对抗）。"
 ---
 
 # Backend Code Review (Dify 后端工程审查)
