@@ -1,6 +1,6 @@
 ---
-name: run-qwen35-35b-mindie
-description: Deploy Qwen3.5-35B on Ascend with MindIE inference engine — source env scripts, conf.json config, mindieservice_daemon startup, OpenAI-compatible API
+name: qwen35-ascend-mindie
+description: "Deploy Qwen3.5-35B on Ascend with Huawei MindIE inference engine — source env scripts, conf.json config, mindieservice_daemon startup, OpenAI-compatible API. 昇腾框架选型指路：MindIE 针对国产算子与图静态编译深度优化；若使用 vllm-ascend 框架部署 DeepSeek 等模型见 deepseek-v4-ascend。"
 ---
 
 # Deploy Qwen3.5-35B on Ascend with MindIE
@@ -63,7 +63,7 @@ Use the `deploy.sh` driver. It:
 5. Waits for the service to be ready
 
 ```bash
-cd <project-root>/run-qwen35-35b-mindie
+cd <project-root>/qwen35-ascend-mindie
 
 # Start the service
 bash deploy.sh /data/models/Qwen3.5-35B-Instruct qwen35

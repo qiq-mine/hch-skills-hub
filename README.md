@@ -21,8 +21,8 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 | [bms-create-ims](./bms-create-ims/) | 裸金属服务器BMS私有镜像制作（OS 安装、分区、驱动、Cloud-Init） |
 | [get-esm-api](./get-esm-api/) | ESM API 调用 — IAM Token 认证、APIG AppCode、容量/告警/审计/话单查询 |
 | [deepseek-v4-ascend](./deepseek-v4-ascend/) | DeepSeek V4 昇腾部署 — 单机 Docker（Flash w8a8）与多机 Slurm 集群（Pro w4a8）拓扑二选一，vllm-ascend、MTP 投机解码、工具调用 |
-| [run-qwen35-35b-mindie](./run-qwen35-35b-mindie/) | Qwen3.5-35B 昇腾 MindIE 推理部署 — conf.json、环境脚本、mindieservice_daemon |
-| [run-sg-policy-deploy](./run-sg-policy-deploy/) | 安全组端口策略工单开通 — 工单解析、查询安全组、添加规则、不删已有规则 |
+| [qwen35-ascend-mindie](./qwen35-ascend-mindie/) | Qwen3.5-35B 昇腾 MindIE 推理部署 — conf.json、环境脚本、mindieservice_daemon |
+| [sg-policy-deploy](./sg-policy-deploy/) | 安全组端口策略工单开通 — 工单解析、dry-run 预审、清理过期规则、添加规则 |
 
 ### 严谨软件工程 (pstack 技能套件)
 
@@ -83,8 +83,7 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 
 | 技能 | 说明 |
 |------|------|
-| [deeplearn-vp-create](./deeplearn-vp-create/) | DeepLearning.AI 课程视频制作全流程 — 字幕提取、翻译旁白、故事板审阅、TTS配音与Remotion渲染 |
-| [dl-ai-lesson](./dl-ai-lesson/) | DL.AI 课程视频制作 — 中文 AI 技术讲解视频，Python/Pillow/ffmpeg 确定性渲染与 Remotion 审阅优先二选一 |
+| [dl-ai-lesson](./dl-ai-lesson/) | DL.AI 课程视频制作与端到端发布管线 — 字幕提取、7场景分镜、HTML故事板审阅、TTS配音、Python与Remotion双渲染引擎、小红书3:4宣发卡片 |
 | [video](./video/) | AI 视频制作与编程式视频生成 — Remotion/Hyperframes、AI Avatars (HeyGen) 及生成大模型 |
 
 ### 架构可视化与项目管理

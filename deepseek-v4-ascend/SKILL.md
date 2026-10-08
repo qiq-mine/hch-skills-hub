@@ -1,6 +1,6 @@
 ---
 name: deepseek-v4-ascend
-description: "Deploy DeepSeek V4 on Ascend NPU with vllm-ascend — two topologies: single-node Docker (Flash w8a8) or multi-node Slurm+Apptainer cluster (Pro w4a8). OpenAI-compatible API, MTP speculative decoding, tool-call support"
+description: "Deploy DeepSeek V4 on Ascend NPU with vllm-ascend — two topologies: single-node Docker (Flash w8a8) or multi-node Slurm+Apptainer cluster (Pro w4a8). OpenAI-compatible API, MTP speculative decoding, tool-call support. 昇腾框架选型指路：若使用华为官方 MindIE 推理引擎部署 Qwen 等模型见 qwen35-ascend-mindie。"
 ---
 
 # DeepSeek V4 on Ascend (vllm-ascend)

@@ -1,6 +1,6 @@
 ---
-name: run-sg-policy-deploy
-description: Deploy security group port policy on Huawei Cloud — parse work order (text/image), query SG by dest IP name, fail-closed validation, cleanup expired rules, add allow/deny rules
+name: sg-policy-deploy
+description: "Deploy security group port policy on Huawei Cloud — parse work order (text/image), query SG by dest IP name, fail-closed validation, cleanup expired rules, add allow/deny rules. Triggers: sg-policy-deploy, /sg-policy-deploy, run-sg-policy-deploy, 安全组策略, 华为云安全组, 端口策略开通, 安全组工单."
 ---
 
 # 安全组端口策略开通工作流
