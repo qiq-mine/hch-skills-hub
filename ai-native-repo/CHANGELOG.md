@@ -11,3 +11,7 @@
   跟踪《AI Native Repo 团队标准（草案 v0.1）》+《实用规范 v0.1》
   （hch-agentic-esm PR #3，评审中）。
 - 约定：后续变更不走 PR，直接推 master 并在此记录（Robin 2026-10-08）。
+
+## 2026-10-08 — G5 边界指路
+
+- SKILL.md description 追加与 pstack 的互引：重活方法论（原则/剧本/对抗审查）见 pstack skill 套件；pstack 侧同步指回本 skill（仓库结构与团队规范层面）。

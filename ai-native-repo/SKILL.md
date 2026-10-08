@@ -1,6 +1,6 @@
 ---
 name: "ai_native_repo"
-description: "Apply the AI Native Repo team standard when scaffolding, reviewing, or working in a code repo: directory layout, AGENTS.md, harness.yaml, spec/CodeSpec, changes proposal flow, SDD phases, and checklists."
+description: "Apply the AI Native Repo team standard when scaffolding, reviewing, or working in a code repo: directory layout, AGENTS.md, harness.yaml, spec/CodeSpec, changes proposal flow, SDD phases, and checklists. For rigorous working methods (principles, playbooks, adversarial review), see the pstack skill suite（重活方法论见 pstack）。"
 ---
 
 # AI Native Repo
