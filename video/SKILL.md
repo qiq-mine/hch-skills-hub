@@ -339,5 +339,5 @@ Output: Ready-to-publish video
 
 - [ ] **HeyGen MCP 接入指南**：补充 `.agents/mcp/heygen.json` 配置与本地鉴权联调步骤。
 - [ ] **Hyperframes HTML 范例库**：补充 `templates/hyperframes-product-demo.html` 示例。
-- [ ] **Remotion 模版包**：与 `dl-ai-lesson-remotion` 形成协同，沉淀通用的产品视频渲染模版。
+- [ ] **Remotion 模版包**：与 `dl-ai-lesson` 形成协同，沉淀通用的产品视频渲染模版。
 - [ ] **AI 视频 Prompt 案例库**：持续扩充 [references/ai-video-prompting.md](references/ai-video-prompting.md)。

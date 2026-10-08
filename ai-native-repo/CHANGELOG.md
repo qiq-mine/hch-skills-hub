@@ -15,3 +15,7 @@
 ## 2026-10-08 — G5 边界指路
 
 - SKILL.md description 追加与 pstack 的互引：重活方法论（原则/剧本/对抗审查）见 pstack skill 套件；pstack 侧同步指回本 skill（仓库结构与团队规范层面）。
+
+## 2026-10-08 — 命名规范化与跨中台协同
+
+- SKILL.md name 规范化为 `ai-native-repo`（kebab-case 对齐全库规范）；description 补充指向 `oh-teamai`（团队 AI 资产中台与配置分发）。

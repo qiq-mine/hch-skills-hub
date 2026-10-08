@@ -1,3 +1,8 @@
+---
+name: dl-ai-lesson
+description: "从截图、讲稿、大纲制作面向中文学习者的 AI 技术讲解视频。同一套制作标准，两种渲染器二选一：分支 A（Python/Pillow/ffmpeg 确定性渲染）与分支 B（Remotion/React 审阅优先）。涵盖分集分镜规划、审阅门禁、TTS 混音、OPPO Sans 字体规范与成片校验。Triggers: dl-ai-lesson, /dl-ai-lesson, 视频制作, AI课程视频, 课程视频, Remotion视频."
+---
+
 # DL.AI 课程视频制作
 
 从截图、讲稿、大纲制作面向中文学习者的 AI 技术讲解视频。同一套制作标准，两种渲染器二选一（用户说 Remotion 走分支 B，否则默认分支 A）。
