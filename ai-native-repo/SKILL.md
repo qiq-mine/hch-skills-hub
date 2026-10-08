@@ -35,8 +35,9 @@ New-repo, pre-merge, and quarterly anti-rot checklists: `references/checklists.m
 - Review: every finding cites the exact clause (e.g. "§2.4.5", "实用规范 §3.1").
 
 ## Operating Rules
-1. Security hard lines (§2.4): instruction files change only via PR + human review (2026 saw real attacks via repo instruction files); secrets never enter the repo — env injection plus secret-scan gate; permissions declared once at root (`rules/agent-permissions.md`), subdirectories never widen them; dangerous ops (prod / hardware / data deletion) declared in the file header and `rules/security.md`, merged only with a named reviewer; **an MCP server must never be the sole custodian of credentials** — scopes are explicitly issued per call, never inherited from the caller.
+1. Security hard lines (§2.4):instruction files change only via PR + human review (2026 saw real attacks via repo instruction files); secrets never enter the repo — env injection plus secret-scan gate; permissions declared once at root (`rules/agent-permissions.md`), subdirectories never widen them; dangerous ops (prod / hardware / data deletion) declared in the file header and `rules/security.md`, merged only with a named reviewer; **an MCP server must never be the sole custodian of credentials** — scopes are explicitly issued per call, never inherited from the caller.
 2. AGENTS.md is human-written and human-reviewed; never adopt agent-generated context files unverified.
 3. Tools stay light and replaceable; the repo carries the engineering assets.
 4. Ship staged (Phase 1 → 2 → 3), never big-bang. Pilot items (eval thresholds, context budgets, guardrail placement) run 3 months before becoming standard.
 5. Measure three numbers: agent first-pass merge rate, standard violations intercepted by CI, human firefighting time after agent-written code.
+6. Maintenance of this skill: changes go straight to master with a CHANGELOG entry — no PR (Robin 2026-10-08).
