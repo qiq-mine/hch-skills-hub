@@ -23,6 +23,9 @@
     },
     {
       "path": "ai-native-repo"
+    },
+    {
+      "path": "deeplearning-ai-course-pipeline"
     }
   ]
 }
