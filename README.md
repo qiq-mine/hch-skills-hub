@@ -83,6 +83,7 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 
 | 技能 | 说明 |
 |------|------|
+| [motion-showreel](./motion-showreel/) | 编程式动效视频与讲解片制作 — 确定性 render(t)、43 种精调风格库、内置物理合成/Tone.js、TTS/录音口播混音、工作区审片与 20 分钟分章构建 |
 | [dl-ai-lesson](./dl-ai-lesson/) | DL.AI 课程视频制作与端到端发布管线 — 字幕提取、7场景分镜、HTML故事板审阅、TTS配音、Python与Remotion双渲染引擎、小红书3:4宣发卡片 |
 | [video](./video/) | AI 视频制作与编程式视频生成 — Remotion/Hyperframes、AI Avatars (HeyGen) 及生成大模型 |
 | [deeplearning-ai-course-pipeline](./deeplearning-ai-course-pipeline/) | DeepLearning.AI 课程标准化本地化流水线 — 4 格式双语字幕渲染、Edge 神经网络中文配音、FFmpeg 多音轨无损封装、万字架构实战指南 |
