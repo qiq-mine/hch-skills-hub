@@ -1,6 +1,6 @@
 ---
 name: delegate-execute
-description: "方案确认后的分工执行流程：沟通模型拆任务，执行模型编码，审查模型检查。Triggers: delegate-execute, 开始做, 方案确认了, 开始执行, 开始开发."
+description: "方案确认后的分工执行流程：判断角色拆任务，执行角色编码，判断角色审查。Triggers: delegate-execute, 方案确认了, 按方案开始做, 开始执行方案."
 ---
 
 # delegate-execute — 分工执行
@@ -32,11 +32,13 @@ description: "方案确认后的分工执行流程：沟通模型拆任务，执
 
 ### 角色分配
 
-| 角色 | 职责 | 推荐模型 |
+| 角色 | 职责 | 模型档位 |
 |------|------|---------|
-| **沟通模型** | 接受需求、拆解任务、协调各方、向用户汇报 | 沟通能力强的模型（Claude Opus / Gemini Pro） |
-| **执行模型** | 接受明确任务指令，输出代码 | 编码速度快的模型（Flash / Grok Fast） |
-| **审查模型** | 检查执行结果，报告问题 | 判断力强的模型（Claude Opus / Pro） |
+| **沟通模型** | 接受需求、拆解任务、协调各方、向用户汇报 | 判断角色（主对话当前模型） |
+| **执行模型** | 接受明确任务指令，输出代码 | 执行角色（Antigravity `flash` 档） |
+| **审查模型** | 检查执行结果，报告问题 | 判断角色（Antigravity `pro` 档），且与执行模型不同 |
+
+具体用哪个模型不在这里写死。装了 pstack 时按 `setup-pstack` 生成的配置选；没装时用上表的 Antigravity 档位。
 
 ### 为什么要分工
 
@@ -89,6 +91,6 @@ invoke_subagent(TypeName="self", Model="pro", Role="审查者", Prompt="...")
 
 ## pstack 联动
 
-- 审查环节自动调用 `interrogate`（多模型对抗审查），如果 pstack 可用。
-- 代码清理调用 `no-comments` 和 `unslop`。
-- 如果没有 pstack，审查用两个不同模型分别检查同一份代码。
+- 审查环节：读取 `interrogate` 的 `SKILL.md`，按它做多模型对抗审查。
+- 代码清理：读取 `no-comments` 和 `unslop` 的 `SKILL.md` 并按它们执行。
+- 如果没有 pstack（技能列表里没有 `interrogate`），审查改用两个不同模型分别检查同一份代码。

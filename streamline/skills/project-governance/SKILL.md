@@ -32,9 +32,9 @@ description: "项目治理：高频错误变规则，交互规范集中维护，
 - 所有尺寸、间距、颜色必须引用设计 token，不允许硬编码数值
 - 新增常量时先检查是否已有同类定义
 
-## 并发安全
-- 视频处理任务必须支持取消，不允许阻塞主线程
-- 文件操作必须处理"文件被其他进程占用"的情况
+## 错误处理
+- 外部 API 调用必须设超时，失败时向用户显示可操作的提示，不吞掉异常
+- 耗时超过 1 秒的操作必须可取消，不允许阻塞主线程
 ```
 
 ### 2. 交互规范集中维护
@@ -95,6 +95,6 @@ description: "项目治理：高频错误变规则，交互规范集中维护，
 
 ## pstack 联动
 
-- 规则编码调用 `principle-encode-lessons-in-structure`。
-- 代码清理调用 `principle-subtract-before-you-add` 和 `no-comments`。
+- 规则编码：读取 `principle-encode-lessons-in-structure` 的 `SKILL.md`，能写成 lint 或脚本检查的规则就不只写成文字。
+- 代码清理：读取 `principle-subtract-before-you-add` 和 `no-comments` 的 `SKILL.md` 并按它们执行。
 - 文档巡检可调用 research 子智能体批量扫描。

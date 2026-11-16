@@ -1,13 +1,13 @@
 ---
-name: steamline
-description: "AI 长期项目护航套件 — 从选型到发布的全生命周期工程实践。面向独立开发者和小团队，用 AI 长期开发复杂项目时，解决选型草率、方案看不懂、测试拖开发、疑难修不动、发版出事故等问题。底层按需调用 pstack 的工程纪律能力，用户不需要了解 pstack。Triggers: steamline, /steamline, 长期项目, 项目护航, AI开发管理, 选型调研, 方案确认, 分层测试, 止损, 发布流程, 安全模式."
+name: streamline
+description: "AI 长期项目护航套件 — 从选型到发布的全生命周期工程实践。面向独立开发者和小团队，用 AI 长期开发复杂项目时，解决选型草率、方案看不懂、测试拖开发、疑难修不动、发版出事故等问题。底层按需调用 pstack 的工程纪律能力，用户不需要了解 pstack。本文件是套件总览与路由表；具体阶段由各子技能处理。Triggers: streamline, /streamline, 长期项目, 项目护航, AI开发管理, 项目阶段怎么走."
 ---
 
-# steamline — AI 长期项目护航套件
+# streamline — AI 长期项目护航套件
 
 > 用 AI 长期开发复杂项目，不失控。
 
-steamline 是一个 Antigravity 插件，把「一个人 + AI 开发复杂项目」的全生命周期组织成 8 个按需调用的技能。每个技能解决一个具体阶段的问题，按需调用 pstack 的底层能力，用户不需要了解 pstack 的内部结构。
+streamline 是一个 Antigravity 插件，把「一个人 + AI 开发复杂项目」的全生命周期组织成 8 个按需调用的技能。每个技能解决一个具体阶段的问题，按需调用 pstack 的底层能力，用户不需要了解 pstack 的内部结构。
 
 ---
 
@@ -27,7 +27,9 @@ steamline 是一个 Antigravity 插件，把「一个人 + AI 开发复杂项目
 
 ---
 
-## 8 个技能速查
+## 8 个技能速查（唯一路由表）
+
+`streamline-agent` 也按这张表路由。改触发场景只改这里和对应子技能的 frontmatter。
 
 | 技能 | 触发场景 | 做什么 |
 |------|---------|--------|
@@ -36,7 +38,7 @@ steamline 是一个 Antigravity 插件，把「一个人 + AI 开发复杂项目
 | [`delegate-execute`](./skills/delegate-execute/SKILL.md) | 方案确认后开始编码 | 沟通模型拆任务 → 执行模型编码 → 审查模型检查，保持主对话干净 |
 | [`layered-testing`](./skills/layered-testing/SKILL.md) | "测试太慢了"、"怎么安排测试" | 局部改动跑局部测试，完成后重型回归；反复调试路径封装成工具 |
 | [`project-governance`](./skills/project-governance/SKILL.md) | 功能越多效果越差、样式不一致 | 高频错误变规则，交互规范集中维护，文档与代码定期对照巡检 |
-| [`cut-losses`](./skills/cut-losses/SKILL.md) | "这个 bug 修不好"、连续几轮失败 | 两个强模型分别排查报置信度，人决定继续修、换方案还是砍功能 |
+| [`cut-losses`](./skills/cut-losses/SKILL.md) | "这个 bug 修不好"、连续几轮失败 | 两个不同模型分别排查并给出可验证证据，人决定继续修、换方案还是砍功能 |
 | [`release-gate`](./skills/release-gate/SKILL.md) | "准备发版"、设置发布流程 | 发布条件程序化（测试不过不准推送），保留回滚配置 |
 | [`safe-mode`](./skills/safe-mode/SKILL.md) | 桌面/移动端项目、崩溃恢复设计 | 设计最底层恢复入口：程序崩溃时仍能告知用户解决方案 |
 
@@ -45,18 +47,20 @@ steamline 是一个 Antigravity 插件，把「一个人 + AI 开发复杂项目
 ## 与 pstack 的关系
 
 ```
-steamline（项目驾驭层 — 面向人）
+streamline（项目驾驭层 — 面向人）
   "什么时候该做什么，怎么组织 AI 的工作"
        │
-       │ 按需自动调用
+       │ 可用时读取并遵循
        ▼
 pstack（智能体纪律层 — 面向 AI）
   "代码怎么写、怎么审查、怎么验证"
 ```
 
-- **steamline 可以独立使用**：不装 pstack 也能跑，只是审查和验证环节会用更通用的方式。
-- **装了 pstack 更强**：steamline 的 `delegate-execute` 会自动调用 `interrogate` 做交叉审查，`layered-testing` 会调用 `prove-it-works` 做验证，`readable-proposal` 会调用 `architect` 做技术设计。
-- **用户不需要知道 pstack**：所有调用都在技能内部完成，用户只需要跟 steamline 的技能交互。
+- **streamline 可以独立使用**：不装 pstack 也能跑，只是审查和验证环节会用更通用的方式。
+- **装了 pstack 更强**：技能不能自动触发别的技能，所以各子技能的「pstack 联动」写明了该读哪个 pstack 技能的 `SKILL.md` 并按它执行。例如 `delegate-execute` 审查时按 `interrogate` 执行，`layered-testing` 收尾时按 `principle-prove-it-works` 验证，`readable-proposal` 设计时按 `architect` 执行。
+- **判断 pstack 是否可用**：看当前可用技能列表里有没有 `interrogate`。有就按 pstack 技能执行，没有就用子技能里写的替代方案。
+- **模型分配**：子技能只写角色（判断 / 执行），不写具体模型名。装了 pstack 时按 `setup-pstack` 的配置选模型。
+- **用户不需要知道 pstack**：用户只需要跟 streamline 的技能交互。
 
 ---
 
@@ -100,13 +104,13 @@ pstack（智能体纪律层 — 面向 AI）
 
 ## 安装
 
-steamline 是一个 Antigravity 插件，通过 `plugin.json` 声明规则、技能和智能体。
+streamline 是一个 Antigravity 插件，通过 `plugin.json` 声明规则、技能和智能体。
 
 在项目的 `.agents/plugins.json` 中加载：
 ```json
 {
   "entries": [
-    { "path": "steamline" }
+    { "path": "streamline" }
   ]
 }
 ```
@@ -115,7 +119,7 @@ steamline 是一个 Antigravity 插件，通过 `plugin.json` 声明规则、技
 ```json
 {
   "entries": [
-    { "path": "steamline" },
+    { "path": "streamline" },
     { "path": "pstack" }
   ]
 }
@@ -124,9 +128,12 @@ steamline 是一个 Antigravity 插件，通过 `plugin.json` 声明规则、技
 ### 插件结构
 
 ```
-steamline/
+streamline/
 ├── plugin.json          ← 插件声明（名称、版本、入口）
-├── SKILL.md             ← 主入口文档
+├── SKILL.md             ← 主入口文档 + 唯一路由表
+├── README.md            ← 简介与安装
+├── CHANGELOG.md         ← 版本记录
+├── LICENSE
 ├── rules/
 │   └── AGENTS.md        ← 始终生效的项目约束（自动加载）
 ├── skills/              ← 8 个按需调用的技能
@@ -139,7 +146,7 @@ steamline/
 │   ├── release-gate/
 │   └── safe-mode/
 └── agents/
-    └── steamline-agent.md  ← 主路由智能体
+    └── streamline-agent.md  ← 主路由智能体
 ```
 
 - `rules/` 下的规则**始终生效**，不需要手动触发
