@@ -32,6 +32,9 @@
     },
     {
       "path": "streamline/skills"
+    },
+    {
+      "path": "agent-relay"
     }
   ]
 }

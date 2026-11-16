@@ -1,0 +1,26 @@
+{
+  "name": "agent-relay",
+  "displayName": "Agent Relay",
+  "version": "1.0.0",
+  "description": "跨 CLI Agent 任务中继与委托执行器：一句话统一调度 8 大终端 Agent (Claude Code / Codex / Antigravity / DSH / Grok / Kimi 等)，支持会话续接、角色路由与权限隔离。",
+  "author": {
+    "name": "qiq-mine"
+  },
+  "keywords": [
+    "agent-relay",
+    "delegate",
+    "claude-code",
+    "antigravity",
+    "codex",
+    "opencode",
+    "dsh",
+    "grok",
+    "kimi",
+    "workbuddy",
+    "subagents",
+    "cli-agents"
+  ],
+  "category": "developer-tools",
+  "skills": "./",
+  "license": "MIT"
+}

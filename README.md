@@ -88,6 +88,12 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 | [video](./video/) | AI 视频制作与编程式视频生成 — Remotion/Hyperframes、AI Avatars (HeyGen) 及生成大模型 |
 | [deeplearning-ai-course-pipeline](./deeplearning-ai-course-pipeline/) | DeepLearning.AI 课程标准化本地化流水线 — 4 格式双语字幕渲染、Edge 神经网络中文配音、FFmpeg 多音轨无损封装、万字架构实战指南 |
 
+### 跨 CLI 智能体中继调度 (Agent Relay)
+
+| 技能 | 说明 |
+|------|------|
+| [agent-relay](./agent-relay/) | 跨 CLI Agent 任务中继与委托执行器（插件） — 一句话调度 8 大终端 Agent（Claude Code / Codex / Antigravity / DSH / Grok / Kimi 等），支持会话续接、角色路由与权限隔离 |
+
 ### 架构可视化与项目护航
 
 | 技能 | 说明 |
