@@ -88,10 +88,11 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 | [video](./video/) | AI 视频制作与编程式视频生成 — Remotion/Hyperframes、AI Avatars (HeyGen) 及生成大模型 |
 | [deeplearning-ai-course-pipeline](./deeplearning-ai-course-pipeline/) | DeepLearning.AI 课程标准化本地化流水线 — 4 格式双语字幕渲染、Edge 神经网络中文配音、FFmpeg 多音轨无损封装、万字架构实战指南 |
 
-### 架构可视化与项目管理
+### 架构可视化与项目护航
 
 | 技能 | 说明 |
 |------|------|
+| [steamline](./steamline/) | AI 长期项目护航套件（插件） — 从选型到发布的全生命周期工程实践（选型调研、可读方案、分工执行、分层测试、项目治理、疑难止损、发布门禁、安全模式） |
 | [creating-architecture-web-explainers](./creating-architecture-web-explainers/) | 架构 Web 交互式解释器制作 — 将技术栈与架构流转转为中文单文件 Web 解释器或 Archscribe 图 |
 
 ## 使用方式

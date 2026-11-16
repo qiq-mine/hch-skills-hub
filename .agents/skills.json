@@ -26,6 +26,12 @@
     },
     {
       "path": "deeplearning-ai-course-pipeline"
+    },
+    {
+      "path": "steamline"
+    },
+    {
+      "path": "steamline/skills"
     }
   ]
 }
