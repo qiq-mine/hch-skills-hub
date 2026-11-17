@@ -89,6 +89,29 @@ invoke_subagent(TypeName="self", Model="pro", Role="审查者", Prompt="...")
 
 或使用 `/teamwork` 命令让 Antigravity 自动分配团队。
 
+## 实际操作（Cursor）
+
+在 Cursor 中，通过 Composer 会话隔离与模型切换实现三层分工：
+
+```markdown
+1. 主会话拆解（沟通角色）：
+   - 在主 Chat 或主 Composer 中完成方案确认与任务拆解。
+   - 将方案拆为独立子任务，每个任务明确：修改文件范围、预期行为、本地验证命令。
+
+2. 开启独立 Composer 执行编码（执行角色）：
+   - 按 `Cmd/Ctrl + I` 开启独立的 Composer 窗口/标签页（保持主会话上下文干净）。
+   - 可选用响应迅速的编码模型（如 Claude 3.5 Sonnet / Composer 默认模型）。
+   - 派发具体子任务，由执行模型完成代码编写与局部测试，避免冗长的调试日志污染主会话。
+
+3. 切换强推理模型审查（审查角色）：
+   - 执行模型完成后，切换到强推理/思考模型（如 Claude 3.7 Sonnet Thinking / o3-mini / DeepSeek R1）。
+   - 审查模型对比当前 Git 变更（`git diff`），按「代码审查清单」做针对性审查。
+
+4. 闭环汇报：
+   - 审查发现缺陷时，将具体问题带回执行 Composer 会话修复。
+   - 验证通过后向主会话汇报已验证证据，关闭执行会话，进入下一子任务。
+```
+
 ## pstack 联动
 
 - 审查环节：读取 `interrogate` 的 `SKILL.md`，按它做多模型对抗审查。

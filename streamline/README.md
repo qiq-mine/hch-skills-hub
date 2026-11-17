@@ -1,6 +1,6 @@
 # streamline
 
-AI 长期项目护航套件：一个 Antigravity 插件，用 8 个按需触发的技能覆盖一个人加 AI 长期开发复杂项目时的各个阶段，从技术选型到发布。
+AI 长期项目护航套件（深度支持 **Antigravity** 与 **Cursor**）：用 8 个按需触发的技能覆盖一个人加 AI 长期开发复杂项目时的各个阶段，从技术选型到发布。
 
 | 阶段 | 技能 |
 |------|------|
@@ -10,7 +10,22 @@ AI 长期项目护航套件：一个 Antigravity 插件，用 8 个按需触发�
 
 完整说明和路由表见 [SKILL.md](./SKILL.md)，版本记录见 [CHANGELOG.md](./CHANGELOG.md)。
 
-## 安装
+## 安装与使用
+
+### 在 Cursor 中
+
+1. 软链或复制规则文件至项目 `.cursor/rules/`：
+   ```bash
+   mkdir -p .cursor/rules
+   ln -s /path/to/streamline/rules/streamline.mdc .cursor/rules/streamline.mdc
+   ```
+2. （可选）载入技能目录至 `.cursor/skills/`：
+   ```bash
+   mkdir -p .cursor/skills
+   ln -s /path/to/streamline/skills/* .cursor/skills/
+   ```
+
+### 在 Antigravity 中
 
 在项目的 `.agents/plugins.json` 里加上：
 

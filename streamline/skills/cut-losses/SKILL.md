@@ -86,6 +86,29 @@ swarm(action="add", name="investigator-b", model="<模型B>", brief="独立排�
 
 只能用 `invoke_subagent` 时，一个用 `Model="pro"`，另一个用与之不同的档位（例如主对话模型不是 pro 时用 `Model="inherit"`）。
 
+## 实际操作（Cursor）
+
+在 Cursor 中，通过双标签页 + 跨模型家族实现独立排查：
+
+```markdown
+1. 暂停原会话：连续 3 轮未修好时，立刻在原 Composer/Chat 中暂停，不要继续追加修补。
+
+2. 新建两个独立排查会话：
+   - 打开两个全新的 Chat 或 Composer 标签页（Tab A 与 Tab B）。
+   - Tab A 选用模型家族 A（例如 Claude 3.7 Sonnet / Claude 3.5 Sonnet）。
+   - Tab B 选用模型家族 B（例如 OpenAI o3-mini / GPT-4o 或 DeepSeek R1）。
+   - 注意：两边互不共享对话历史，保证排查完全独立、不带先入为主偏见。
+
+3. 分别发送独立排查指令：
+   - 将「步骤 2：独立排查」中的 Prompt 模板分别粘贴至 Tab A 与 Tab B。
+   - 提供相同上下文：问题表现、复现步骤、此前尝试过但失败的方案及其错误表现。
+   - 明确要求两边在终端实际运行诊断命令，提交真实验证证据（非主观猜测）。
+
+4. 汇聚对比与决策：
+   - 收集两份排查报告，对照「步骤 3：按证据对比」表格比对证据档位。
+   - 将对比摘要带回主会话，由人拍板「继续修 / 换方案 / 砍功能」。
+```
+
 ## pstack 联动
 
 - 排查前读取 `principle-attack-the-premise` 的 `SKILL.md`，按它质疑之前修复共享的前提假设。

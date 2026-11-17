@@ -23,7 +23,7 @@ description: "项目治理：高频错误变规则，交互规范集中维护，
 - 某类 bug 已经修过两次
 
 **做法**：
-把注意事项写进项目的开发约束文件（如 `AGENTS.md`、`.agents/rules/` 或项目根目录的规范文档），让后续实现和审查自动关注。
+把注意事项写进项目的开发约束文件：Antigravity 环境写入 `AGENTS.md` 或 `.agents/rules/`；Cursor 环境写入 `.cursor/rules/*.mdc`（如 `.cursor/rules/project-rules.mdc`），让后续实现和审查自动关注。
 
 ```markdown
 # 项目规则

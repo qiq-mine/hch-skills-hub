@@ -1,13 +1,14 @@
 {
   "name": "streamline",
   "displayName": "Streamline",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "AI 长期项目护航套件 — 从选型到发布的全生命周期工程实践。面向独立开发者和小团队，用 AI 长期开发复杂项目时，解决选型草率、方案看不懂、测试拖开发、疑难修不动、发版出事故等问题。底层按需调用 pstack 的工程纪律能力，用户不需要了解 pstack。",
   "author": {
     "name": "hch"
   },
   "keywords": [
     "streamline",
+    "cursor",
     "长期项目",
     "项目护航",
     "选型调研",

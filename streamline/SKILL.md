@@ -7,7 +7,19 @@ description: "AI 长期项目护航套件 — 从选型到发布的全生命周�
 
 > 用 AI 长期开发复杂项目，不失控。
 
-streamline 是一个 Antigravity 插件，把「一个人 + AI 开发复杂项目」的全生命周期组织成 8 个按需调用的技能。每个技能解决一个具体阶段的问题，按需调用 pstack 的底层能力，用户不需要了解 pstack 的内部结构。
+streamline 是一个面向 AI 长期项目研发的工程护航套件（深度支持 **Antigravity** 与 **Cursor**）。把「一个人 + AI 开发复杂项目」的全生命周期组织成 8 个按需调用的技能。每个技能解决一个具体阶段的问题，按需调用 pstack 的底层能力，用户不需要了解 pstack 的内部结构。
+
+---
+
+## 运行环境机制对照
+
+| 机制维度 | Antigravity 运行机制 | Cursor 运行机制 |
+|---|---|---|
+| **常驻规则加载** | `.agents/rules/` 或 `rules/AGENTS.md` | `.cursor/rules/streamline.mdc` (`alwaysApply: true`) |
+| **技能调用发现** | 插件自动注册或 `invoke_subagent` 调度 | `.cursor/skills/` 目录或 `@streamline` 显式引用 |
+| **分工执行 (`delegate-execute`)** | 主对话拆解 + `invoke_subagent` 派发执行/审查子智能体 | 主会话拆解 + 新建独立 Composer 标签页执行编码 + 强推理模型审查 |
+| **疑难止损 (`cut-losses`)** | `swarm` 多模型并发或子智能体分别排查 | 双 Chat/Composer 标签页 + 切换两大家族模型独立排查 |
+| **项目规则沉淀** | 写入 `AGENTS.md` 或 `.agents/rules/` | 写入 `.cursor/rules/*.mdc` |
 
 ---
 
@@ -102,7 +114,27 @@ pstack（智能体纪律层 — 面向 AI）
 
 ---
 
-## 安装
+## 安装与集成
+
+### 方式一：在 Cursor 中使用
+
+1. **注入常驻规则**：
+   将 `streamline/rules/streamline.mdc` 软链或复制到项目的 `.cursor/rules/` 目录：
+   ```bash
+   mkdir -p .cursor/rules
+   ln -s /path/to/streamline/rules/streamline.mdc .cursor/rules/streamline.mdc
+   ```
+   > 规则内配置了 `alwaysApply: true`，在所有 Chat 和 Composer 会话中自动注入「方案先于代码」、「干净上下文」等纪律。
+
+2. **载入技能目录（可选，作为 Cursor Agent Skills）**：
+   如果使用 Cursor 的技能扩展能力，可将 `streamline/skills/` 软链到 `.cursor/skills/`：
+   ```bash
+   mkdir -p .cursor/skills
+   ln -s /path/to/streamline/skills/* .cursor/skills/
+   ```
+   也可以直接在对话中通过 `@streamline` 或技能文件名引用。
+
+### 方式二：在 Antigravity 中使用（插件模式）
 
 streamline 是一个 Antigravity 插件，通过 `plugin.json` 声明规则、技能和智能体。
 
@@ -125,17 +157,18 @@ streamline 是一个 Antigravity 插件，通过 `plugin.json` 声明规则、�
 }
 ```
 
-### 插件结构
+### 目录结构
 
 ```
 streamline/
-├── plugin.json          ← 插件声明（名称、版本、入口）
+├── plugin.json          ← Antigravity 插件声明（名称、版本、入口）
 ├── SKILL.md             ← 主入口文档 + 唯一路由表
 ├── README.md            ← 简介与安装
 ├── CHANGELOG.md         ← 版本记录
 ├── LICENSE
 ├── rules/
-│   └── AGENTS.md        ← 始终生效的项目约束（自动加载）
+│   ├── AGENTS.md        ← Antigravity 始终生效的项目约束（自动加载）
+│   └── streamline.mdc   ← Cursor 始终生效的项目约束（alwaysApply: true）
 ├── skills/              ← 8 个按需调用的技能
 │   ├── tech-recon/
 │   ├── readable-proposal/

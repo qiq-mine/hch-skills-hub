@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0 — 2026-11-17
+
+### Added
+
+- **原生适配 Cursor**：新增 `rules/streamline.mdc`（Cursor Rules 2.0 规范，`alwaysApply: true`），自动为 Cursor 对话与 Composer 注入「方案先于代码」、「干净上下文」、「测试纪律」等核心工程约束。
+- **Cursor 多会话分工执行指引**：在 `delegate-execute` 中补充 Cursor 原生操作指南，通过独立 Composer 会话（`Cmd/Ctrl + I`）隔离机械编码与终端日志，结合快速编码模型与强推理审查模型保持主会话干净。
+- **Cursor 跨模型独立止损排查**：在 `cut-losses` 中补充 Cursor 原生操作指南，通过并行双会话标签页 + 切换两大家族模型（如 Claude vs OpenAI/DeepSeek）实现无偏见的独立根因排查与证据对比。
+- **Cursor 项目规则沉淀**：在 `project-governance` 中补充将高频错误沉淀到 `.cursor/rules/*.mdc` 的指引。
+- **双平台集成文档**：更新 `SKILL.md` 与 `README.md`，提供 Antigravity 与 Cursor 的运行机制对照表及安装配置说明。
+
 ## 0.2.0 — 2026-11-17
 
 ### Breaking
