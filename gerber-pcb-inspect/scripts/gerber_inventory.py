@@ -70,17 +70,27 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Gerber 层清点")
     ap.add_argument("target", help="Gerber 目录、zip 或单个文件")
     ap.add_argument("--out", help="写 JSON 到此文件（默认 stdout）")
+    ap.add_argument("--no-bbox", action="store_true", help="跳过 pygerber 外框计算")
+    ap.add_argument("--max-bbox-mb", type=float, default=50.0,
+                    help="超过此大小（MB）的单层跳过外框计算（默认 50）")
     args = ap.parse_args()
 
+    max_bytes = int(args.max_bbox_mb * 1024 * 1024)
     layers, drills, netlists, unknown = [], [], [], []
     with collect_inputs(Path(args.target), prefix="gerber-inventory-") as files:
         for f in files:
             kind, role = identify(f)
-            entry = {"file": f.name, "role": role, "size_bytes": f.stat().st_size}
+            size_bytes = f.stat().st_size
+            entry = {"file": f.name, "role": role, "size_bytes": size_bytes}
             if kind == "gerber":
                 text = f.read_text(errors="replace")
                 entry.update(scan_gerber(text))
-                entry["bbox_mm"] = bbox_pygerber(f)
+                if args.no_bbox:
+                    entry["bbox_mm"] = None
+                elif size_bytes > max_bytes:
+                    entry["bbox_mm"] = {"skipped": f"size > {args.max_bbox_mb}MB"}
+                else:
+                    entry["bbox_mm"] = bbox_pygerber(f)
                 entry["lines"] = text.count("\n") + 1
                 layers.append(entry)
             elif kind == "drill":

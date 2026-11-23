@@ -159,8 +159,13 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Excellon 钻孔解析")
     ap.add_argument("drill_file", help="钻孔文件（.drl/.txt/.xnc）")
     ap.add_argument("--out", help="写 JSON 到此文件（默认 stdout）")
+    ap.add_argument("--summary-only", action="store_true",
+                    help="省略 holes 明细数组，避免大文件撑爆上下文")
     args = ap.parse_args()
     result = parse_drill(Path(args.drill_file))
+    if args.summary_only:
+        result.pop("holes", None)
+        result["holes_omitted"] = True
     out = json.dumps(result, ensure_ascii=False, indent=2)
     if args.out:
         Path(args.out).write_text(out, encoding="utf-8")

@@ -60,13 +60,23 @@ def _unique_png_path(outdir: Path, filename: str, used: set[str]) -> Path:
     return outdir / candidate
 
 
+def _matches_filter(filename: str, role: str, filters: list[str]) -> bool:
+    if not filters:
+        return True
+    fl = filename.lower()
+    rl = role.lower()
+    return any(tok in fl or tok in rl for tok in filters)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="批量渲染 Gerber 各层为 PNG")
     ap.add_argument("target", help="Gerber 目录、zip 或单个文件")
     ap.add_argument("outdir", help="PNG 输出目录")
     ap.add_argument("--dpi", type=int, default=200, help="渲染 dpi（默认 200）")
+    ap.add_argument("--layers", help="仅渲染匹配的层（逗号分隔文件名或角色关键词）")
     args = ap.parse_args()
 
+    filters = [s.strip().lower() for s in args.layers.split(",") if s.strip()] if args.layers else []
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     manifest = {"source": str(args.target), "dpi": args.dpi, "layers": []}
@@ -74,7 +84,7 @@ def main() -> int:
     with collect_inputs(Path(args.target), prefix="gerber-render-") as files:
         for f in files:
             kind, role = identify(f)
-            if kind != "gerber":
+            if kind != "gerber" or not _matches_filter(f.name, role, filters):
                 continue
             png = _unique_png_path(outdir, f.name, used_pngs)
             try:

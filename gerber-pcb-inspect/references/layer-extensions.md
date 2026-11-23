@@ -1,6 +1,6 @@
 # 层与文件扩展名对照
 
-识别逻辑在 `scripts/gerber_inventory.py`（`identify()`）与 `scripts/render_layers.py`（`identify()`）里，两份映射保持一致。扩展名大小写不敏感。
+识别逻辑统一在 `scripts/_common.py`（`identify()`）中维护，供 `gerber_inventory.py` 与 `render_layers.py` 共用。扩展名大小写不敏感。
 
 ## Altium / 通用 RS-274X
 
