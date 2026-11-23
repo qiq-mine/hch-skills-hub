@@ -10,9 +10,12 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import json
 import re
 import sys
+import tempfile
+from typing import Iterator
 import zipfile
 from pathlib import Path
 
@@ -125,15 +128,29 @@ def bbox_pygerber(path: Path) -> dict | None:
         return {"error": f"{type(e).__name__}: {e}"}
 
 
-def collect_inputs(target: Path) -> list[Path]:
+def _is_ignored(path: Path) -> bool:
+    return "__MACOSX" in path.parts or path.name.startswith("._")
+
+
+@contextmanager
+def collect_inputs(target: Path) -> Iterator[list[Path]]:
     if target.is_file() and target.suffix.lower() == ".zip":
-        tmp = Path("/tmp/gerber-inventory-unzip")
-        with zipfile.ZipFile(target) as z:
-            z.extractall(tmp)
-        return sorted(p for p in tmp.rglob("*") if p.is_file())
+        with tempfile.TemporaryDirectory(prefix="gerber-inventory-") as tmpdir:
+            tmp = Path(tmpdir).resolve()
+            with zipfile.ZipFile(target) as z:
+                for info in z.infolist():
+                    if info.is_dir():
+                        continue
+                    dest = (tmp / info.filename).resolve()
+                    if not dest.is_relative_to(tmp):
+                        continue
+                    z.extract(info, tmp)
+            yield sorted(p for p in tmp.rglob("*") if p.is_file() and not _is_ignored(p))
+        return
     if target.is_file():
-        return [target]
-    return sorted(p for p in target.rglob("*") if p.is_file())
+        yield [target]
+        return
+    yield sorted(p for p in target.rglob("*") if p.is_file() and not _is_ignored(p))
 
 
 def main() -> int:
@@ -142,23 +159,23 @@ def main() -> int:
     ap.add_argument("--out", help="写 JSON 到此文件（默认 stdout）")
     args = ap.parse_args()
 
-    files = collect_inputs(Path(args.target))
     layers, drills, netlists, unknown = [], [], [], []
-    for f in files:
-        kind, role = identify(f)
-        entry = {"file": f.name, "role": role, "size_bytes": f.stat().st_size}
-        if kind == "gerber":
-            text = f.read_text(errors="replace")
-            entry.update(scan_gerber(text))
-            entry["bbox_mm"] = bbox_pygerber(f)
-            entry["lines"] = text.count("\n") + 1
-            layers.append(entry)
-        elif kind == "drill":
-            drills.append(entry)
-        elif kind == "netlist":
-            netlists.append(entry)
-        else:
-            unknown.append(entry)
+    with collect_inputs(Path(args.target)) as files:
+        for f in files:
+            kind, role = identify(f)
+            entry = {"file": f.name, "role": role, "size_bytes": f.stat().st_size}
+            if kind == "gerber":
+                text = f.read_text(errors="replace")
+                entry.update(scan_gerber(text))
+                entry["bbox_mm"] = bbox_pygerber(f)
+                entry["lines"] = text.count("\n") + 1
+                layers.append(entry)
+            elif kind == "drill":
+                drills.append(entry)
+            elif kind == "netlist":
+                netlists.append(entry)
+            else:
+                unknown.append(entry)
     result = {
         "source": str(args.target),
         "layers": layers, "drill_files": drills,

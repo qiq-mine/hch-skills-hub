@@ -12,8 +12,11 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import json
 import sys
+import tempfile
+from typing import Iterator
 import zipfile
 from pathlib import Path
 
@@ -96,15 +99,29 @@ def render_one(path: Path, out_path: Path, dpi: int, role: str) -> dict:
     }
 
 
-def collect_inputs(target: Path) -> list[Path]:
+def _is_ignored(path: Path) -> bool:
+    return "__MACOSX" in path.parts or path.name.startswith("._")
+
+
+@contextmanager
+def collect_inputs(target: Path) -> Iterator[list[Path]]:
     if target.is_file() and target.suffix.lower() == ".zip":
-        tmp = Path("/tmp/gerber-render-unzip")
-        with zipfile.ZipFile(target) as z:
-            z.extractall(tmp)
-        return sorted(p for p in tmp.rglob("*") if p.is_file())
+        with tempfile.TemporaryDirectory(prefix="gerber-render-") as tmpdir:
+            tmp = Path(tmpdir).resolve()
+            with zipfile.ZipFile(target) as z:
+                for info in z.infolist():
+                    if info.is_dir():
+                        continue
+                    dest = (tmp / info.filename).resolve()
+                    if not dest.is_relative_to(tmp):
+                        continue
+                    z.extract(info, tmp)
+            yield sorted(p for p in tmp.rglob("*") if p.is_file() and not _is_ignored(p))
+        return
     if target.is_file():
-        return [target]
-    return sorted(p for p in target.rglob("*") if p.is_file())
+        yield [target]
+        return
+    yield sorted(p for p in target.rglob("*") if p.is_file() and not _is_ignored(p))
 
 
 def main() -> int:
@@ -117,17 +134,18 @@ def main() -> int:
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     manifest = {"source": str(args.target), "dpi": args.dpi, "layers": []}
-    for f in collect_inputs(Path(args.target)):
-        role = identify(f)
-        if role is None:
-            continue
-        png = outdir / (f.name + ".png")  # 用全名防 sample.gtl/sample.gbs 重名覆盖
-        try:
-            entry = render_one(f, png, args.dpi, role)
-            entry["file"] = f.name
-        except Exception as e:  # noqa: BLE001 - 单层失败不中断整批
-            entry = {"file": f.name, "role": role, "error": f"{type(e).__name__}: {e}"}
-        manifest["layers"].append(entry)
+    with collect_inputs(Path(args.target)) as files:
+        for f in files:
+            role = identify(f)
+            if role is None:
+                continue
+            png = outdir / (f.name + ".png")  # 用全名防 sample.gtl/sample.gbs 重名覆盖
+            try:
+                entry = render_one(f, png, args.dpi, role)
+                entry["file"] = f.name
+            except Exception as e:  # noqa: BLE001 - 单层失败不中断整批
+                entry = {"file": f.name, "role": role, "error": f"{type(e).__name__}: {e}"}
+            manifest["layers"].append(entry)
     (outdir / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(manifest, ensure_ascii=False, indent=2))
