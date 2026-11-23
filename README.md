@@ -101,6 +101,12 @@ AI 智能体技能与插件集合 — 面向云基础设施运维部署、自动
 | [streamline](./streamline/) | AI 长期项目护航套件（插件） — 从选型到发布的全生命周期工程实践（选型调研、可读方案、分工执行、分层测试、项目治理、疑难止损、发布门禁、安全模式） |
 | [creating-architecture-web-explainers](./creating-architecture-web-explainers/) | 架构 Web 交互式解释器制作 — 将技术栈与架构流转转为中文单文件 Web 解释器或 Archscribe 图 |
 
+### PCB 制造工程
+
+| 技能 | 说明 |
+|------|------|
+| [gerber-pcb-inspect](./gerber-pcb-inspect/) | Gerber PCB 解析 — RS-274X 层清点、Excellon 钻孔解析、逐层渲染，拼版检查（V-CUT、邮票孔、定位孔、Mark 点） |
+
 ## 使用方式
 
 每个技能独立一个目录，包含 `SKILL.md`（使用说明）及可选的辅助驱动脚本。
