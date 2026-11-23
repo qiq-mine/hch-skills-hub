@@ -20,8 +20,8 @@ from pathlib import Path
 
 TOOL_RE = re.compile(r"^T(\d+)(?:[FS][\d.]+)*C([\d.]+)")
 SELECT_RE = re.compile(r"^T(\d+)\s*$")
-COORD_RE = re.compile(r"^X(-?[\d.]+)?Y(-?[\d.]+)?")
-HEADER_FMT_RE = re.compile(r"^(METRIC|INCH),?\s*(LZ|TZ)?,?\s*(\d+)\.(\d+)?")
+COORD_RE = re.compile(r"^(?:X([+-]?[\d.]+))?(?:Y([+-]?[\d.]+))?\s*$")
+HEADER_FMT_RE = re.compile(r"^(METRIC|INCH)(?:,?\s*(LZ|TZ))?(?:,?\s*(\d+)\.(\d+))?")
 
 
 def parse_coord(raw: str, int_digits: int, dec_digits: int, zero_sup: str) -> float:
@@ -29,7 +29,7 @@ def parse_coord(raw: str, int_digits: int, dec_digits: int, zero_sup: str) -> fl
     if "." in raw:
         return float(raw)
     negative = raw.startswith("-")
-    digits = raw.lstrip("-")
+    digits = raw.lstrip("+-")
     if zero_sup == "TZ":  # 尾零省略：右对齐补零到 dec 位
         digits = digits.ljust(int_digits + dec_digits, "0")
     else:  # LZ：首零省略，左对齐补零
@@ -59,36 +59,53 @@ def parse_drill(path: Path) -> dict:
             continue
         if line in ("M30", "M02", "M00"):
             break
+        if line == "M71":
+            units = "METRIC"
+            continue
+        if line == "M72":
+            units = "INCH"
+            continue
         if not in_body:
             m = HEADER_FMT_RE.match(line)
             if m:
                 units = m.group(1)
                 zero_sup = m.group(2) or "LZ"
-                int_digits = int(m.group(3))
-                dec_digits = int(m.group(4) or "0")
+                if m.group(3) is not None:
+                    raw_int, raw_dec = m.group(3), m.group(4) or ""
+                    if set(raw_int) == {"0"}:
+                        int_digits = len(raw_int)
+                        dec_digits = len(raw_dec)
+                    else:
+                        int_digits = int(raw_int)
+                        dec_digits = int(raw_dec or "0")
+                else:
+                    int_digits, dec_digits = (3, 3) if units == "METRIC" else (2, 4)
                 continue
             m = TOOL_RE.match(line)
             if m:
-                tools[m.group(1)] = float(m.group(2))
+                tools[str(int(m.group(1)))] = float(m.group(2))
                 continue
-            if line == "M48":
+            if line in ("M48", "FMAT,2", "ICI,OFF"):
+                continue
+            if line == "ICI,ON":
+                warnings.append(f"L{lineno}: 不支持增量坐标 ICI,ON")
                 continue
             warnings.append(f"L{lineno}: header 未识别: {line[:60]}")
             continue
         # body
         if line in ("G05", "G90", "G00"):
             continue
-        if line.startswith("G") and line not in ("G05", "G90"):
+        if line.startswith("G"):
             warnings.append(f"L{lineno}: 不支持的 G 指令（可能为钻孔循环/槽孔）: {line[:60]}")
             continue
         m = SELECT_RE.match(line)
         if m:
-            current_tool = m.group(1)
+            current_tool = str(int(m.group(1)))
             if current_tool not in tools:
                 warnings.append(f"L{lineno}: 选了未定义的工具 T{current_tool}")
             continue
         m = COORD_RE.match(line)
-        if m:
+        if m and (m.group(1) is not None or m.group(2) is not None):
             xs, ys = m.groups()
             if xs is not None:
                 last_x = parse_coord(xs, int_digits, dec_digits, zero_sup)
@@ -109,14 +126,30 @@ def parse_drill(path: Path) -> dict:
         per_tool[t]["count"] += 1
     xs = [h["x"] for h in holes]
     ys = [h["y"] for h in holes]
+    scale = 25.4 if units == "INCH" else 1.0
+    bbox = (
+        {"min_x": min(xs), "min_y": min(ys), "max_x": max(xs), "max_y": max(ys)}
+        if holes else None
+    )
+    bbox_mm = (
+        {
+            "min_x_mm": round(min(xs) * scale, 3),
+            "min_y_mm": round(min(ys) * scale, 3),
+            "max_x_mm": round(max(xs) * scale, 3),
+            "max_y_mm": round(max(ys) * scale, 3),
+            "width_mm": round((max(xs) - min(xs)) * scale, 3),
+            "height_mm": round((max(ys) - min(ys)) * scale, 3),
+        }
+        if holes else None
+    )
     return {
         "file": path.name, "units": units,
         "zero_suppression": zero_sup, "format": f"{int_digits}.{dec_digits}",
         "tools": {f"T{k}": v for k, v in tools.items()},
         "total_holes": len(holes),
         "per_tool": per_tool,
-        "bbox": {"min_x": min(xs), "min_y": min(ys),
-                 "max_x": max(xs), "max_y": max(ys)} if holes else None,
+        "bbox": bbox,
+        "bbox_mm": bbox_mm,
         "holes": holes,
         "warnings": warnings,
     }
