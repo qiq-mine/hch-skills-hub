@@ -12,13 +12,11 @@
 from __future__ import annotations
 
 import argparse
-from contextlib import contextmanager
 import json
 import sys
-import tempfile
-from typing import Iterator
-import zipfile
 from pathlib import Path
+
+from _common import collect_inputs, identify, suppress_pygerber_warnings
 
 ROLE_SCHEME = {
     "Top Copper": "COPPER", "Bottom Copper": "COPPER",
@@ -27,66 +25,19 @@ ROLE_SCHEME = {
     "Top Paste": "PASTE_MASK", "Bottom Paste": "PASTE_MASK",
 }
 
-# 与 gerber_inventory.py 同一份映射（独立复制，避免跨脚本 import）
-EXT_ROLE = {
-    "GTL": "Top Copper", "GBL": "Bottom Copper",
-    "G1": "Inner Copper 1", "G2": "Inner Copper 2", "G3": "Inner Copper 3",
-    "G4": "Inner Copper 4", "G5": "Inner Copper 5", "G6": "Inner Copper 6",
-    "GTS": "Top Solder Mask", "GBS": "Bottom Solder Mask",
-    "GTO": "Top Silkscreen", "GBO": "Bottom Silkscreen",
-    "GTP": "Top Paste", "GBP": "Bottom Paste",
-    "GM1": "Board Outline", "GML": "Board Outline",
-    "GKO": "Keep-Out / Outline", "GM3": "Mechanical",
-}
-KICAD_ROLE = {
-    "F_CU": "Top Copper", "B_CU": "Bottom Copper",
-    "IN1_CU": "Inner Copper 1", "IN2_CU": "Inner Copper 2",
-    "F_MASK": "Top Solder Mask", "B_MASK": "Bottom Solder Mask",
-    "F_SILKS": "Top Silkscreen", "B_SILKS": "Bottom Silkscreen",
-    "F_PASTE": "Top Paste", "B_PASTE": "Bottom Paste",
-    "EDGE_CUTS": "Board Outline",
-}
-GERBER_EXTS = {"GTL", "GBL", "GTS", "GBS", "GTO", "GBO", "GTP", "GBP",
-                "GM1", "GML", "GKO", "GM3", "GBR", "GER"}
-
-
-def identify(path: Path) -> str | None:
-    """Gerber 文件返回角色，否则 None。"""
-    import re
-    suffix = path.suffix.lstrip(".").upper()
-    if suffix not in GERBER_EXTS and not re.fullmatch(r"G\d+", suffix) \
-            and not re.fullmatch(r"GM\d+", suffix):
-        return None
-    parts = path.name.upper().split(".")
-    if len(parts) >= 3 and parts[-1] in GERBER_EXTS and parts[-2] in KICAD_ROLE:
-        return KICAD_ROLE[parts[-2]]
-    role = EXT_ROLE.get(suffix)
-    if role:
-        return role
-    if re.fullmatch(r"G\d+", suffix):
-        return f"Inner Copper {suffix[1:]}"
-    return f"Mechanical {suffix}"
-
 
 def render_one(path: Path, out_path: Path, dpi: int, role: str) -> dict:
-    import logging
     from pygerber.gerberx3.api import (
         ColorScheme, Rasterized2DLayer, Rasterized2DLayerParams,
     )
     scheme_name = ROLE_SCHEME.get(role, "DEFAULT_GRAYSCALE")
     scheme = getattr(ColorScheme, scheme_name)
-    # 细线在低 dpi 下会刷屏 "zero surface" 警告，渲染期间只压到 ERROR
-    _log = logging.getLogger()
-    _old = _log.level
-    _log.setLevel(logging.ERROR)
-    try:
+    with suppress_pygerber_warnings():
         layer = Rasterized2DLayer(Rasterized2DLayerParams(
             source_path=str(path), dpi=dpi, colors=scheme))
         result = layer.render()
         result.save(str(out_path))
         props = result.get_properties()
-    finally:
-        _log.setLevel(_old)
     bb = props.gerber_bounding_box
     from PIL import Image
     with Image.open(out_path) as im:
@@ -99,29 +50,14 @@ def render_one(path: Path, out_path: Path, dpi: int, role: str) -> dict:
     }
 
 
-def _is_ignored(path: Path) -> bool:
-    return "__MACOSX" in path.parts or path.name.startswith("._")
-
-
-@contextmanager
-def collect_inputs(target: Path) -> Iterator[list[Path]]:
-    if target.is_file() and target.suffix.lower() == ".zip":
-        with tempfile.TemporaryDirectory(prefix="gerber-render-") as tmpdir:
-            tmp = Path(tmpdir).resolve()
-            with zipfile.ZipFile(target) as z:
-                for info in z.infolist():
-                    if info.is_dir():
-                        continue
-                    dest = (tmp / info.filename).resolve()
-                    if not dest.is_relative_to(tmp):
-                        continue
-                    z.extract(info, tmp)
-            yield sorted(p for p in tmp.rglob("*") if p.is_file() and not _is_ignored(p))
-        return
-    if target.is_file():
-        yield [target]
-        return
-    yield sorted(p for p in target.rglob("*") if p.is_file() and not _is_ignored(p))
+def _unique_png_path(outdir: Path, filename: str, used: set[str]) -> Path:
+    candidate = f"{filename}.png"
+    idx = 2
+    while candidate in used:
+        candidate = f"{filename}.{idx}.png"
+        idx += 1
+    used.add(candidate)
+    return outdir / candidate
 
 
 def main() -> int:
@@ -134,12 +70,13 @@ def main() -> int:
     outdir = Path(args.outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     manifest = {"source": str(args.target), "dpi": args.dpi, "layers": []}
-    with collect_inputs(Path(args.target)) as files:
+    used_pngs: set[str] = set()
+    with collect_inputs(Path(args.target), prefix="gerber-render-") as files:
         for f in files:
-            role = identify(f)
-            if role is None:
+            kind, role = identify(f)
+            if kind != "gerber":
                 continue
-            png = outdir / (f.name + ".png")  # 用全名防 sample.gtl/sample.gbs 重名覆盖
+            png = _unique_png_path(outdir, f.name, used_pngs)
             try:
                 entry = render_one(f, png, args.dpi, role)
                 entry["file"] = f.name
