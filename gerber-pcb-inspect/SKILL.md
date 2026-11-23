@@ -15,19 +15,19 @@ description: "Parse RS-274X Gerber + Excellon drill files into structured data a
 
 ### 2. 清点各层
 ```bash
-python scripts/gerber_inventory.py <zip|目录|文件> --out summary.json
+python scripts/gerber_inventory.py <zip|目录|文件> --out summary.json [--no-bbox]
 ```
-输出每层的角色（按扩展名识别，见 `references/layer-extensions.md`）、格式（FS/MO）、X2 FileFunction、孔径定义（D-code、形状、尺寸）、flash（D03）与 draw（D01）计数、外框尺寸（mm）。单层解析失败只记 `bbox_mm.error`，不中断整批。
+输出每层的角色（按扩展名识别，见 `references/layer-extensions.md`）、格式（FS/MO）、X2 FileFunction、孔径定义（D-code、形状、尺寸）、flash（D03）与 draw（D01）计数、外框尺寸（mm）。单层解析失败只记 `bbox_mm.error`，单层 > 50MB 默认跳过外框计算。
 
 ### 3. 解析钻孔
 ```bash
-python scripts/drill_parse.py <file.drl> --out holes.json
+python scripts/drill_parse.py <file.drl> --out holes.json [--summary-only]
 ```
-输出单位、零省略方式、工具表（孔径）、每工具孔数、全部孔位、外框。PTH/NPTH 文件本身不区分，靠文件名区分（见 `references/layer-extensions.md`）。钻孔循环（G81/G82/G83）、槽孔（G85）、重复指令（R）不在脚本范围内，遇到记 `warnings` 并明说。
+输出单位、零省略方式、工具表（孔径）、每工具孔数、全部孔位（可用 `--summary-only` 省略明细）、外框（含 `bbox_mm`）。PTH/NPTH 文件本身不区分，靠文件名区分（见 `references/layer-extensions.md`）。钻孔循环（G81/G82/G83）、槽孔（G85）、重复指令（R）不在脚本范围内，遇到记 `warnings` 并明说。
 
 ### 4. 渲染各层
 ```bash
-python scripts/render_layers.py <zip|目录> <输出目录> [--dpi 200]
+python scripts/render_layers.py <zip|目录> <输出目录> [--dpi 200] [--layers 关键词]
 ```
 每层一张 PNG + `manifest.json`（角色、外框、像素）。配色按层角色选。线宽 < 0.2mm 的层（常见于外形层）用 `--dpi 300` 以上，否则细线在图上可能看不见——此时以 manifest 里的外框数字为准，不以图为准。
 

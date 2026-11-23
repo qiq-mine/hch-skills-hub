@@ -3,7 +3,8 @@
 ## 格式边界
 - **只支持 RS-274X**（内嵌孔径的现代 Gerber）。RS-274D（老格式，孔径在外部 .apr 文件里）不支持，遇到先报不支持。
 - Gerber X2 属性（`%TF.FileFunction%` 等）只做记录（summary.json 的 `file_function_x2`），不参与判定。
-- 钻孔只支持 Excellon 确定性子集：M48 头、METRIC/INCH、TZ/LZ、绝对坐标。**不支持**：钻孔循环 G81/G82/G83、槽孔 G85、重复指令 R、增量坐标 G91。遇到记入 `warnings`，不中断。
+- `gerber_inventory.py` 的 `flash_count_D03` / `draw_count_D01` 按显式 `D03*`/`D01*` 计数，若文件使用模态连续坐标会低估；`ADD_RE` 仅扫描标准 `C/R/O/P` 孔径，不含自定义 Aperture Macro。
+- 钻孔只支持 Excellon 确定性子集：M48 头、METRIC/INCH（含 `M71`/`M72`）、TZ/LZ、绝对坐标。**不支持**：钻孔循环 G81/G82/G83、槽孔 G85、重复指令 R、增量坐标 G91/`ICI,ON`。遇到记入 `warnings`，不中断。`holes.json` 同时输出原单位 `bbox` 与换算后的 `bbox_mm`。
 - ODB++（.tgz）、IPC-2581 不解析。
 
 ## 解析库边界（2026-11-23 实测）
